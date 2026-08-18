@@ -743,7 +743,10 @@
 
   function viewAi() {
     var html = '<div class="card">' +
-      '<div class="ai-head">' + icon("sparkles", 16) + '<span>AI Assistant — antwoordt uitsluitend op basis van jouw organisatiedata</span></div>' +
+      '<div class="ai-head">' + icon("sparkles", 16) + '<span>AI Assistant — antwoordt uitsluitend op basis van jouw organisatiedata</span>' +
+        '<span class="pill pill-medium" style="margin-left:auto;">Gesimuleerde demo</span>' +
+      '</div>' +
+      '<p style="font-size:12.5px;color:var(--slate);margin:-8px 0 16px;">Deze antwoorden zijn vooraf gescript op basis van voorbeelddata, ter illustratie van het productconcept — nog geen live AI-verbinding.</p>' +
       '<div class="chat-thread" id="chat-thread">' +
         aiThread.map(function (m) { return '<div class="bubble ' + m.role + '">' + esc(m.text) + '</div>'; }).join("") +
       '</div>' +
