@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HelderBeveiligd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root {
+    --paper: #F6F7F5;
+    --surface: #FFFFFF;
+    --surface-alt: #FBFAF8;
+    --line: #E4E7E9;
+    --line-strong: #D7DBDE;
+    --ink: #14181F;
+    --slate: #5B6472;
+    --slate-soft: #8891A0;
+    --navy: #131C2E;
+    --navy-line: #26314A;
+    --navy-ink: #C7CCD6;
+    --navy-dim: #8991A0;
+    --seal: #B4802E;
+    --seal-ink: #8A611F;
+    --seal-soft: #F4E9D8;
+    --seal-soft-border: #E8D4AC;
+    --good: #2E7D5B;
+    --high: #DE8A2E;
+    --medium: #C9A227;
+    --critical: #C4432E;
+    --track: #EEF0F1;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #10131A; --surface: #171B24; --surface-alt: #1B2029;
+      --line: #262B36; --line-strong: #333947;
+      --ink: #ECEEF2; --slate: #9CA3B0; --slate-soft: #7A8291;
+      --navy: #0A0D14; --navy-line: #232A3B; --navy-ink: #C7CCD6; --navy-dim: #7A8291;
+      --seal: #D3A054; --seal-ink: #E8C079; --seal-soft: #241F12; --seal-soft-border: #443722;
+      --good: #45B084; --high: #F0A048; --medium: #E0C24C; --critical: #E2604A;
+      --track: #232833;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #10131A; --surface: #171B24; --surface-alt: #1B2029;
+    --line: #262B36; --line-strong: #333947;
+    --ink: #ECEEF2; --slate: #9CA3B0; --slate-soft: #7A8291;
+    --navy: #0A0D14; --navy-line: #232A3B; --navy-ink: #C7CCD6; --navy-dim: #7A8291;
+    --seal: #D3A054; --seal-ink: #E8C079; --seal-soft: #241F12; --seal-soft-border: #443722;
+    --good: #45B084; --high: #F0A048; --medium: #E0C24C; --critical: #E2604A;
+    --track: #232833;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+  h1, h2, h3 { font-family: 'Source Serif 4', Georgia, serif; font-weight: 500; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+  p { margin: 0; }
+  .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  a { color: inherit; }
+  img, svg { display: block; max-width: 100%; }
+  ::selection { background: var(--seal-soft); color: var(--ink); }
+  button, input, textarea, select { font-family: inherit; font-size: inherit; color: inherit; }
+  button { cursor: pointer; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+    outline: 2px solid var(--seal); outline-offset: 3px; border-radius: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); }
+  section[id] { scroll-margin-top: 84px; }
+  .eyebrow {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--seal-ink); display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px;
+  }
+  .eyebrow::before { content: ""; width: 16px; height: 1px; background: var(--seal); display: inline-block; }
+  .lede { font-size: 17px; line-height: 1.65; color: var(--slate); max-width: 62ch; }
+  section { padding: clamp(64px, 9vw, 112px) 0; }
+
+  /* ---------------- Header ---------------- */
+  header.site {
+    position: sticky; top: 0; z-index: 40; background: color-mix(in srgb, var(--paper) 86%, transparent);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+  }
+  .nav-row { display: flex; align-items: center; justify-content: space-between; height: 66px; gap: 20px; }
+  .brand { display: flex; align-items: center; gap: 9px; flex-shrink: 0; }
+  .brand-mark { width: 27px; height: 27px; border-radius: 7px; background: var(--seal); display: flex; align-items: center; justify-content: center; }
+  .brand-mark span { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 13px; color: var(--navy); }
+  .brand-name { font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
+  nav.primary { display: flex; align-items: center; gap: 28px; }
+  nav.primary a.navlink { font-size: 13.5px; font-weight: 500; color: var(--slate); text-decoration: none; }
+  nav.primary a.navlink:hover { color: var(--ink); }
+  .nav-cta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .menu-btn { display: none; background: none; border: none; padding: 6px; color: var(--ink); }
+
+  .btn { display: inline-flex; align-items: center; gap: 6px; border-radius: 8px; font-size: 13.5px; font-weight: 600; padding: 10px 16px; text-decoration: none; border: 1px solid transparent; white-space: nowrap; }
+  .btn-primary { background: var(--navy); color: #fff; transition: background .12s; }
+  .btn-primary:hover { background: color-mix(in srgb, var(--navy) 85%, var(--seal) 15%); }
+  .btn-ghost { border-color: var(--line-strong); color: var(--ink); background: transparent; transition: border-color .12s, background .12s; }
+  .btn-ghost:hover { border-color: var(--seal); background: var(--seal-soft); }
+  .btn-lg { padding: 13px 22px; font-size: 14.5px; }
+
+  @media (max-width: 860px) {
+    nav.primary { display: none; }
+    .menu-btn { display: inline-flex; }
+    .nav-cta .btn-ghost { display: none; }
+  }
+  #mobile-panel {
+    display: none; border-bottom: 1px solid var(--line); background: var(--surface); padding: 14px clamp(20px,5vw,48px) 20px;
+  }
+  #mobile-panel.open { display: block; }
+  #mobile-panel a.navlink { display: block; padding: 10px 0; font-size: 14.5px; font-weight: 500; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--line); }
+  #mobile-panel .btn { margin-top: 14px; width: 100%; justify-content: center; }
+
+  /* ---------------- Hero ---------------- */
+  .hero { padding: clamp(56px, 9vw, 100px) 0 clamp(40px, 6vw, 72px); }
+  .hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: clamp(32px, 5vw, 64px); align-items: center; }
+  @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+  h1.hero-title { font-size: clamp(2.1rem, 4.4vw, 3.4rem); line-height: 1.08; margin-bottom: 20px; }
+  h1.hero-title em { font-style: normal; color: var(--seal-ink); }
+  .hero-actions { display: flex; align-items: center; gap: 14px; margin-top: 30px; flex-wrap: wrap; }
+  .hero-actions .btn-ghost svg { transition: transform .15s; }
+  .hero-actions .btn-ghost:hover svg { transform: translate(2px, -2px); }
+
+  .hero-visual { position: relative; }
+  .doc-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px;
+    box-shadow: 0 1px 2px rgba(20,24,31,0.05), 0 20px 44px -24px rgba(20,24,31,0.28);
+    position: relative;
+  }
+  .doc-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .doc-card-head .tag { font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--slate); }
+  .doc-score-row { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; }
+  .doc-ring { position: relative; width: 74px; height: 74px; flex-shrink: 0; }
+  .doc-ring .val { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .doc-ring .val b { font-size: 19px; font-weight: 600; line-height: 1; }
+  .doc-ring .val small { font-size: 8px; color: var(--slate); }
+  .doc-fw-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .doc-fw-sub { font-size: 12px; color: var(--slate); }
+  .doc-bars { display: flex; flex-direction: column; gap: 10px; }
+  .doc-bar-row { display: flex; align-items: center; gap: 10px; }
+  .doc-bar-row .lbl { font-size: 12px; width: 46px; flex-shrink: 0; color: var(--slate); }
+  .doc-bar-track { flex: 1; height: 5px; background: var(--track); border-radius: 99px; overflow: hidden; }
+  .doc-bar-fill { height: 100%; border-radius: 99px; }
+  .doc-bar-row .pct { font-size: 11.5px; width: 30px; text-align: right; flex-shrink: 0; }
+  .seal-stamp {
+    position: absolute; top: -22px; right: -18px; width: 84px; height: 84px;
+    filter: drop-shadow(0 10px 18px rgba(180,128,46,0.35));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .seal-stamp { animation: stamp-drop .7s cubic-bezier(.2,1.4,.4,1) .25s backwards; }
+    .doc-card { animation: card-in .6s ease-out backwards; }
+  }
+  @keyframes stamp-drop { 0% { opacity: 0; transform: translateY(-40px) rotate(-18deg) scale(0.7); } 70% { transform: translateY(3px) rotate(4deg) scale(1.03); } 100% { opacity: 1; transform: translateY(0) rotate(-8deg) scale(1); } }
+  @keyframes card-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 900px) { .seal-stamp { width: 64px; height: 64px; top: -16px; right: -10px; } }
+
+  /* ---------------- Section scaffolding ---------------- */
+  .section-head { max-width: 640px; margin-bottom: 44px; }
+  .section-head h2 { font-size: clamp(1.5rem, 2.6vw, 2.15rem); line-height: 1.15; margin-bottom: 14px; }
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+
+  /* ---------------- Probleem / quote ---------------- */
+  .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  @media (max-width: 860px) { .problem-grid { grid-template-columns: 1fr; } }
+  blockquote.seal-quote {
+    margin: 0; padding: 26px 26px 26px 28px; background: var(--seal-soft); border: 1px solid var(--seal-soft-border);
+    border-radius: 12px; font-family: 'Source Serif 4', Georgia, serif; font-size: 18px; line-height: 1.55; color: var(--ink);
+    position: relative;
+  }
+  blockquote.seal-quote::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px; background: var(--seal); border-radius: 3px; }
+
+  /* ---------------- Loop ---------------- */
+  .loop-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+  @media (max-width: 860px) { .loop-row { grid-template-columns: 1fr; gap: 22px; } }
+  .loop-step { position: relative; padding: 0 20px 0 0; }
+  .loop-step:first-child { padding-left: 0; }
+  .loop-num { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; color: var(--seal-ink); margin-bottom: 12px; display: block; }
+  .loop-step h3 { font-family: 'Inter', sans-serif; font-size: 15.5px; font-weight: 600; margin-bottom: 8px; }
+  .loop-step p { font-size: 13.5px; line-height: 1.55; color: var(--slate); }
+  .loop-connector { position: absolute; top: 6px; right: -1px; width: 20px; height: 1px; background: var(--line-strong); }
+  @media (max-width: 860px) { .loop-connector { display: none; } .loop-step { padding-right: 0; } }
+  .loop-note { margin-top: 30px; font-size: 13px; color: var(--slate); display: flex; align-items: center; gap: 8px; }
+
+  /* ---------------- Evidence chain ---------------- */
+  .chain-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: clamp(20px, 3vw, 30px); }
+  .chain-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+  .chain-node { background: var(--surface-alt); border: 1px solid var(--line); border-radius: 9px; padding: 10px 14px; }
+  .chain-node .k { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--slate-soft); display: block; margin-bottom: 3px; }
+  .chain-node .v { font-size: 13px; font-weight: 600; }
+  .chain-node.mono .v { font-family: 'IBM Plex Mono', monospace; }
+  .chain-arrow { color: var(--slate-soft); flex-shrink: 0; }
+  .chain-result { display: flex; align-items: center; gap: 10px; padding: 4px 10px 4px 4px; border-radius: 8px; background: var(--seal-soft); border: 1px solid var(--seal-soft-border); }
+  .chain-result .dot { width: 8px; height: 8px; border-radius: 99px; background: var(--high); flex-shrink: 0; margin-left: 6px; }
+  .chain-result .v { font-size: 13px; font-weight: 600; }
+  .chain-reasoning { font-size: 13.5px; line-height: 1.65; color: var(--slate); border-top: 1px solid var(--line); padding-top: 18px; }
+  .chain-reasoning b { color: var(--ink); font-weight: 600; }
+
+  /* ---------------- Frameworks ---------------- */
+  .fw-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 780px) { .fw-grid { grid-template-columns: 1fr; } }
+  .fw-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; }
+  .fw-card .fw-code { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: var(--slate-soft); text-transform: uppercase; margin-bottom: 10px; }
+  .fw-card .fw-title { font-weight: 600; font-size: 16px; margin-bottom: 16px; }
+  .fw-card .fw-pct { font-size: 32px; font-weight: 600; font-family: 'IBM Plex Mono', monospace; margin-bottom: 10px; }
+  .fw-card .bar-track { height: 6px; background: var(--track); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
+  .fw-card .bar-fill { height: 100%; border-radius: 99px; }
+  .fw-card .fw-desc { font-size: 13px; color: var(--slate); line-height: 1.55; }
+
+  /* ---------------- Voor wie ---------------- */
+  .forwho-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  @media (max-width: 860px) { .forwho-grid { grid-template-columns: 1fr; } }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .chip { font-size: 12.5px; font-weight: 500; padding: 6px 12px; border-radius: 99px; background: var(--surface-alt); border: 1px solid var(--line); color: var(--slate); }
+  .trigger-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  .trigger-list li { display: flex; gap: 12px; font-size: 14px; line-height: 1.55; }
+  .trigger-list svg { flex-shrink: 0; margin-top: 3px; color: var(--seal); }
+
+  /* ---------------- Onderscheid ---------------- */
+  .diff-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  @media (max-width: 980px) { .diff-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .diff-grid { grid-template-columns: 1fr; } }
+  .diff-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
+  .diff-card svg { color: var(--seal); margin-bottom: 14px; }
+  .diff-card h3 { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .diff-card p { font-size: 13.5px; line-height: 1.55; color: var(--slate); }
+
+  /* ---------------- Dark CTA band ---------------- */
+  .band {
+    background: var(--navy); color: var(--navy-ink); border-radius: 20px; padding: clamp(36px, 5vw, 56px);
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center;
+  }
+  @media (max-width: 860px) { .band { grid-template-columns: 1fr; } }
+  .band h2 { color: #fff; font-size: clamp(1.5rem, 2.6vw, 2.1rem); margin-bottom: 12px; }
+  .band p { color: var(--navy-dim); font-size: 14.5px; line-height: 1.6; max-width: 46ch; }
+  .band-stats { display: flex; gap: 28px; flex-wrap: wrap; }
+  .band-stats div b { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 26px; color: #fff; }
+  .band-stats div span { font-size: 12px; color: var(--navy-dim); }
+
+  /* ---------------- Contact ---------------- */
+  .contact-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 48px; align-items: start; }
+  @media (max-width: 860px) { .contact-grid { grid-template-columns: 1fr; } }
+  form#pilot-form { display: flex; flex-direction: column; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 26px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 520px) { .form-row { grid-template-columns: 1fr; } }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 12px; font-weight: 600; color: var(--slate); }
+  .field input, .field select, .field textarea {
+    border: 1px solid var(--line-strong); border-radius: 8px; padding: 10px 12px; background: var(--paper); color: var(--ink); font-size: 13.5px; outline: none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--seal); }
+  .field textarea { resize: vertical; min-height: 88px; font-family: inherit; }
+  form#pilot-form .btn { margin-top: 4px; }
+  .confirm-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 32px; text-align: center; }
+  .confirm-panel svg { margin: 0 auto 14px; color: var(--good); }
+  .confirm-panel h3 { font-family: 'Source Serif 4', serif; font-size: 20px; margin-bottom: 8px; }
+  .confirm-panel p { font-size: 13.5px; color: var(--slate); }
+
+  /* ---------------- Footer ---------------- */
+  footer.site { border-top: 1px solid var(--line); padding: 44px 0; }
+  .foot-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .foot-links { display: flex; gap: 22px; flex-wrap: wrap; }
+  .foot-links a { font-size: 13px; color: var(--slate); text-decoration: none; }
+  .foot-links a:hover { color: var(--ink); }
+  .foot-note { font-size: 12px; color: var(--slate-soft); margin-top: 18px; }
+
+  #toast {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(12px);
+    background: var(--navy); color: #fff; font-size: 13px; padding: 10px 16px; border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25); opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s;
+    z-index: 50;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap nav-row">
+    <div class="brand">
+      <div class="brand-mark"><span>H</span></div>
+      <span class="brand-name">HelderBeveiligd</span>
+    </div>
+    <nav class="primary">
+      <a class="navlink" href="#hoe-het-werkt">Hoe het werkt</a>
+      <a class="navlink" href="#bewijs">Bewijs</a>
+      <a class="navlink" href="#frameworks">Frameworks</a>
+      <a class="navlink" href="#voor-wie">Voor wie</a>
+      <a class="navlink" href="#onderscheid">Onderscheid</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="dashboard.html" target="_blank" rel="noopener">Live demo</a>
+      <a class="btn btn-primary" href="#contact">Pilot aanvragen</a>
+      <button class="menu-btn" id="menu-toggle" aria-expanded="false" aria-controls="mobile-panel" aria-label="Menu openen">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="mobile-panel">
+    <a class="navlink" href="#hoe-het-werkt">Hoe het werkt</a>
+    <a class="navlink" href="#bewijs">Bewijs</a>
+    <a class="navlink" href="#frameworks">Frameworks</a>
+    <a class="navlink" href="#voor-wie">Voor wie</a>
+    <a class="navlink" href="#onderscheid">Onderscheid</a>
+    <a class="btn btn-ghost" href="dashboard.html" target="_blank" rel="noopener">Live demo bekijken ↗</a>
+    <a class="btn btn-primary" href="#contact">Pilot aanvragen</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">AI Security &amp; Compliance Cockpit — Bollenstreek MKB</div>
+        <h1 class="hero-title">Weet niet alleen <em>dát</em> je veilig bent.<br>Weet waarom — en toon het aan.</h1>
+        <p class="lede">HelderBeveiligd leest je beleid, koppelt elke regel aan ISO 27001, NIS2 en de AVG, en genereert het bewijs dat je auditor, verzekeraar en toezichthouder daadwerkelijk willen zien. Automatisch. Elke dag actueel.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-lg" href="#contact">Pilot aanvragen</a>
+          <a class="btn btn-ghost btn-lg" href="dashboard.html" target="_blank" rel="noopener">
+            Bekijk het live dashboard
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="doc-card">
+          <svg class="seal-stamp" viewBox="0 0 100 100" fill="none">
+            <circle cx="50" cy="50" r="46" fill="var(--seal)"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#fff" stroke-width="1.2" stroke-dasharray="2 3" opacity="0.7"/>
+            <text x="50" y="57" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="30" font-weight="600" fill="#fff">H</text>
+          </svg>
+          <div class="doc-card-head">
+            <span class="tag">Organization Security Score</span>
+          </div>
+          <div class="doc-score-row">
+            <div class="doc-ring">
+              <svg viewBox="0 0 100 100" width="74" height="74">
+                <circle cx="50" cy="50" r="44" fill="none" stroke="var(--track)" stroke-width="8"/>
+                <circle cx="50" cy="50" r="44" fill="none" stroke="var(--seal)" stroke-width="8" stroke-dasharray="199 277" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+              </svg>
+              <div class="val"><b class="mono">72</b><small>/ 100</small></div>
+            </div>
+            <div>
+              <div class="doc-fw-name">Acme Bloembollen B.V.</div>
+              <div class="doc-fw-sub">+8% sinds vorige maand</div>
+            </div>
+          </div>
+          <div class="doc-bars">
+            <div class="doc-bar-row"><span class="lbl">AVG</span><div class="doc-bar-track"><div class="doc-bar-fill" style="width:82%;background:var(--good);"></div></div><span class="pct mono">82%</span></div>
+            <div class="doc-bar-row"><span class="lbl">ISO</span><div class="doc-bar-track"><div class="doc-bar-fill" style="width:68%;background:var(--seal);"></div></div><span class="pct mono">68%</span></div>
+            <div class="doc-bar-row"><span class="lbl">NIS2</span><div class="doc-bar-track"><div class="doc-bar-fill" style="width:54%;background:var(--high);"></div></div><span class="pct mono">54%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="probleem">
+    <div class="wrap">
+      <div class="problem-grid reveal">
+        <div>
+          <div class="eyebrow">Waarom HelderBeveiligd</div>
+          <h2>Technisch veilig is niet hetzelfde als aantoonbaar compliant.</h2>
+          <p class="lede" style="margin-top:16px;">Scanningplatforms vertellen je of je poorten, SSL en endpoints in orde zijn. Waardevol — maar het is een infrastructuurstatus, geen bewijsvoering. Geen van de bestaande spelers leest je beleid, koppelt het aan een normenkader en laat zien wélk document welke control dekt en wat er nog ontbreekt.</p>
+        </div>
+        <blockquote class="seal-quote">
+          "Technische scanners vertellen je of je veilig bent. HelderBeveiligd vertelt je of je <em style="font-style:normal;color:var(--seal-ink);">aantoonbaar</em> veilig én compliant bent — en genereert het bewijs, de documenten en de acties om dat elke dag waar te maken."
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section id="hoe-het-werkt" style="background:var(--surface-alt);">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Het product in één lus</div>
+        <h2>Upload. Analyseer. Begrijp. Handel. Continu.</h2>
+        <p class="lede">Geen vragenlijst, geen jaarlijkse audit-scramble. Eén cockpit die met elke upload, scan of wijziging opnieuw doorrekent waar je staat.</p>
+      </div>
+      <div class="loop-row reveal">
+        <div class="loop-step"><span class="loop-num">01</span><h3>Upload</h3><p>Beleid, procedures en bewijsstukken in één omgeving — geen losse mappenstructuur meer.</p><span class="loop-connector"></span></div>
+        <div class="loop-step"><span class="loop-num">02</span><h3>Analyseer</h3><p>De AI classificeert elk document en koppelt het aan de juiste requirement per normenkader.</p><span class="loop-connector"></span></div>
+        <div class="loop-step"><span class="loop-num">03</span><h3>Begrijp</h3><p>Elke score is herleidbaar: document → control → requirement → score. Geen black box.</p><span class="loop-connector"></span></div>
+        <div class="loop-step"><span class="loop-num">04</span><h3>Handel</h3><p>Concrete, geprioriteerde acties met geschatte score-impact — geen checklist, een cockpit.</p></div>
+      </div>
+      <div class="loop-note reveal">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 3 6.7"/><path d="M3 21v-6h6"/></svg>
+        Geen momentopname — na "Handel" begint de lus opnieuw bij de volgende upload of scan.
+      </div>
+    </div>
+  </section>
+
+  <section id="bewijs">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Geen AI-score zonder bewijs</div>
+        <h2>Elke score is te herleiden naar een document.</h2>
+        <p class="lede">Dit is het principe dat vertrouwen wint bij een doelgroep die AI nog wantrouwt: de AI is geen generieke chatbot, maar een compliance-consultant die alleen antwoordt op basis van jouw eigen organisatiedata.</p>
+      </div>
+      <div class="chain-card reveal">
+        <div class="chain-row">
+          <div class="chain-node mono"><span class="k">Document</span><span class="v">Access_Control_Policy.pdf</span></div>
+          <svg class="chain-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="chain-node"><span class="k">Control</span><span class="v">A.9 — Toegangsrechten</span></div>
+          <svg class="chain-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="chain-node mono"><span class="k">Framework</span><span class="v">ISO 27001</span></div>
+          <svg class="chain-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="chain-result"><span class="dot"></span><span class="v">Gedeeltelijk</span></div>
+        </div>
+        <p class="chain-reasoning"><b>AI-redenering —</b> de policy beschrijft het toekennen van toegangsrechten, maar bevat geen formeel proces voor periodieke review van toegangsrechten. Aanbeveling: implementeer een kwartaalproces voor toegangsreview.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="frameworks" style="background:var(--surface-alt);">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Eén cockpit, drie normenkaders</div>
+        <h2>AVG, NIS2 en ISO 27001 — in dezelfde taal als je auditor.</h2>
+      </div>
+      <div class="fw-grid reveal">
+        <div class="fw-card">
+          <div class="fw-code">GDPR / AVG</div>
+          <div class="fw-title">Privacy &amp; gegevensbescherming</div>
+          <div class="fw-pct">82%</div>
+          <div class="bar-track"><div class="bar-fill" style="width:82%;background:var(--good);"></div></div>
+          <p class="fw-desc">28 compliant · 5 gedeeltelijk · 2 ontbrekend</p>
+        </div>
+        <div class="fw-card">
+          <div class="fw-code">ISO 27001</div>
+          <div class="fw-title">Informatiebeveiliging</div>
+          <div class="fw-pct">68%</div>
+          <div class="bar-track"><div class="bar-fill" style="width:68%;background:var(--seal);"></div></div>
+          <p class="fw-desc">42 compliant · 18 gedeeltelijk · 12 ontbrekend</p>
+        </div>
+        <div class="fw-card">
+          <div class="fw-code">NIS2</div>
+          <div class="fw-title">Netwerk- &amp; informatiebeveiliging</div>
+          <div class="fw-pct">54%</div>
+          <div class="bar-track"><div class="bar-fill" style="width:54%;background:var(--high);"></div></div>
+          <p class="fw-desc">19 compliant · 14 gedeeltelijk · 17 ontbrekend</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="voor-wie">
+    <div class="wrap">
+      <div class="forwho-grid reveal">
+        <div>
+          <div class="eyebrow">Gebouwd voor de Bollenstreek</div>
+          <h2>Voor MKB-bedrijven zonder eigen CISO.</h2>
+          <p class="lede" style="margin-top:16px;">Bedrijven van 10–150 fte waar IT vaak is uitbesteed aan een lokale MSP. Fase 1 draait op partnerships met accountantskantoren, MSP's, ondernemersverenigingen en cyberverzekeraars in de regio.</p>
+          <div class="chip-row">
+            <span class="chip">Hillegom</span><span class="chip">Lisse</span><span class="chip">Sassenheim</span>
+            <span class="chip">Voorhout</span><span class="chip">Noordwijk</span><span class="chip">Noordwijkerhout</span>
+            <span class="chip">Teylingen</span><span class="chip">Katwijk</span>
+          </div>
+        </div>
+        <ul class="trigger-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.5 8.5-.16.05-.34.05-.5 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg><span>NIS2-plicht — direct, of via een grotere klant in de keten.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.5 8.5-.16.05-.34.05-.5 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg><span>AVG-boetes in het nieuws maken privacy weer een directiethema.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.5 8.5-.16.05-.34.05-.5 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg><span>De cyberverzekeraar eist aantoonbare compliance voor een lagere premie.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.5 8.5-.16.05-.34.05-.5 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg><span>De accountant vraagt om een ISO- of NIS2-verklaring bij de jaarrekening.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="onderscheid" style="background:var(--surface-alt);">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Wat ons anders maakt</div>
+        <h2>Eén cockpit voor techniek én aantoonbare compliance.</h2>
+      </div>
+      <div class="diff-grid reveal">
+        <div class="diff-card">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+          <h3>Bewijs, geen black box</h3>
+          <p>Elke score is herleidbaar naar het document dat hem onderbouwt — geen ongemotiveerd cijfer.</p>
+        </div>
+        <div class="diff-card">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
+          <h3>Normenkader-mapping</h3>
+          <p>AVG, NIS2 en ISO 27001 in dezelfde taal als je auditor, per requirement.</p>
+        </div>
+        <div class="diff-card">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+          <h3>Van gat naar conceptdocument</h3>
+          <p>Ontbreekt een plan? Wij genereren een eerste conceptversie in plaats van een lege checklist-regel.</p>
+        </div>
+        <div class="diff-card">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.5 8.5-.16.05-.34.05-.5 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+          <h3>Scan én beleid, in één cockpit</h3>
+          <p>Poorten, SSL en DNS naast je documentatie — niet twee losse tools die je zelf aan elkaar moet knopen.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap reveal">
+      <div class="band">
+        <div>
+          <h2>Fase 1: High-Touch Validation.</h2>
+          <p>We draaien de eerste pilots samen met accountantskantoren, MSP's en cyberverzekeraars in de Bollenstreek — geen landelijke rollout, maar een paar bedrijven écht goed geholpen.</p>
+        </div>
+        <div class="band-stats">
+          <div><b class="mono">3</b><span>normenkaders in v1</span></div>
+          <div><b class="mono">8</b><span>gemeentes in scope</span></div>
+          <div><b class="mono">10–150</b><span>fte doelgroep</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact-grid reveal">
+        <div>
+          <div class="eyebrow">Fase 1 · Bollenstreek pilot</div>
+          <h2>Praat met ons over een pilot.</h2>
+          <p class="lede" style="margin-top:16px;">Ben je accountant, MSP, verzekeraar of ondernemer in de Bollenstreek en wil je HelderBeveiligd als eerste testen? Laat het ons weten.</p>
+        </div>
+        <div id="contact-panel">
+          <form id="pilot-form" novalidate>
+            <div class="form-row">
+              <div class="field"><label for="f-naam">Naam</label><input id="f-naam" type="text" required autocomplete="name"></div>
+              <div class="field"><label for="f-bedrijf">Bedrijf</label><input id="f-bedrijf" type="text" required autocomplete="organization"></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label for="f-email">E-mail</label><input id="f-email" type="email" required autocomplete="email"></div>
+              <div class="field">
+                <label for="f-rol">Rol</label>
+                <select id="f-rol">
+                  <option>Directeur / eigenaar</option>
+                  <option>IT-manager</option>
+                  <option>Accountant / adviseur</option>
+                  <option>MSP</option>
+                  <option>Cyberverzekeraar</option>
+                </select>
+              </div>
+            </div>
+            <div class="field"><label for="f-bericht">Bericht (optioneel)</label><textarea id="f-bericht"></textarea></div>
+            <button type="submit" class="btn btn-primary btn-lg">Vraag een pilotgesprek aan</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-row">
+      <div class="brand">
+        <div class="brand-mark"><span>H</span></div>
+        <span class="brand-name">HelderBeveiligd</span>
+      </div>
+      <div class="foot-links">
+        <a href="#hoe-het-werkt">Hoe het werkt</a>
+        <a href="#bewijs">Bewijs</a>
+        <a href="#frameworks">Frameworks</a>
+        <a href="#onderscheid">Onderscheid</a>
+        <a href="dashboard.html" target="_blank" rel="noopener">Live demo ↗</a>
+      </div>
+    </div>
+    <div class="foot-note">HelderBeveiligd — conceptprototype, fase 1 Bollenstreek pilot. Geen live productieomgeving.</div>
+  </div>
+</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var menuBtn = document.getElementById("menu-toggle");
+  var panel = document.getElementById("mobile-panel");
+  menuBtn.addEventListener("click", function () {
+    var open = panel.classList.toggle("open");
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  panel.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () { panel.classList.remove("open"); menuBtn.setAttribute("aria-expanded", "false"); });
+  });
+
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var reveals = document.querySelectorAll(".reveal");
+  if (reduceMotion || !("IntersectionObserver" in window)) {
+    reveals.forEach(function (el) { el.classList.add("in"); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { entry.target.classList.add("in"); io.unobserve(entry.target); }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(function (el) { io.observe(el); });
+  }
+
+  var form = document.getElementById("pilot-form");
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var naam = document.getElementById("f-naam").value.trim() || "daar";
+    var panelEl = document.getElementById("contact-panel");
+    panelEl.innerHTML =
+      '<div class="confirm-panel">' +
+        '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>' +
+        '<h3>Bedankt, ' + naam.replace(/</g, "&lt;") + '.</h3>' +
+        '<p>We nemen binnen 1 werkdag contact op om een pilotgesprek in te plannen.</p>' +
+      '</div>';
+    var toast = document.getElementById("toast");
+    toast.textContent = "Pilotaanvraag verzonden (demo).";
+    toast.classList.add("show");
+    setTimeout(function () { toast.classList.remove("show"); }, 2600);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HelderBeveiligd Cockpit</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root {
+    --bg: #F6F7F5;
+    --surface: #FFFFFF;
+    --surface-hover: #FAFAF9;
+    --track: #EEF0F1;
+    --border: #E4E7E9;
+    --border-strong: #D7DBDE;
+    --ink: #14181F;
+    --slate: #5B6472;
+    --slate-soft: #8891A0;
+    --navy: #131C2E;
+    --navy-line: #26314A;
+    --navy-text: #C7CCD6;
+    --navy-text-dim: #8991A0;
+    --navy-active: #1F2A40;
+    --seal: #B4802E;
+    --seal-ink: #8A611F;
+    --seal-soft: #F4E9D8;
+    --seal-soft-border: #E8D4AC;
+    --critical: #C4432E;
+    --high: #DE8A2E;
+    --medium: #C9A227;
+    --good: #2E7D5B;
+    --shadow: 0 1px 2px rgba(20,24,31,0.05);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #10131A;
+      --surface: #171B24;
+      --surface-hover: #1D222C;
+      --track: #232833;
+      --border: #262B36;
+      --border-strong: #333947;
+      --ink: #ECEEF2;
+      --slate: #9CA3B0;
+      --slate-soft: #7A8291;
+      --navy: #0B0E16;
+      --navy-line: #232A3B;
+      --navy-text: #C7CCD6;
+      --navy-text-dim: #7A8291;
+      --navy-active: #1B2233;
+      --seal: #D3A054;
+      --seal-ink: #E8C079;
+      --seal-soft: #241F12;
+      --seal-soft-border: #443722;
+      --critical: #E2604A;
+      --high: #F0A048;
+      --medium: #E0C24C;
+      --good: #45B084;
+      --shadow: 0 1px 2px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10131A;
+    --surface: #171B24;
+    --surface-hover: #1D222C;
+    --track: #232833;
+    --border: #262B36;
+    --border-strong: #333947;
+    --ink: #ECEEF2;
+    --slate: #9CA3B0;
+    --slate-soft: #7A8291;
+    --navy: #0B0E16;
+    --navy-line: #232A3B;
+    --navy-text: #C7CCD6;
+    --navy-text-dim: #7A8291;
+    --navy-active: #1B2233;
+    --seal: #D3A054;
+    --seal-ink: #E8C079;
+    --seal-soft: #241F12;
+    --seal-soft-border: #443722;
+    --critical: #E2604A;
+    --high: #F0A048;
+    --medium: #E0C24C;
+    --good: #45B084;
+    --shadow: 0 1px 2px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  ::selection { background: var(--seal-soft); color: var(--ink); }
+  button {
+    font-family: inherit; font-size: inherit; color: inherit; cursor: pointer;
+    appearance: none; -webkit-appearance: none; background: none; border: none; margin: 0; padding: 0;
+  }
+  input { font-family: inherit; }
+  button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--seal); outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+
+  .app { display: flex; min-height: 100vh; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    width: 224px; flex-shrink: 0; background: var(--navy); color: var(--navy-text);
+    padding: 20px 12px; display: flex; flex-direction: column;
+  }
+  .brand { display: flex; align-items: center; gap: 9px; padding: 0 8px; margin-bottom: 26px; }
+  .brand-mark {
+    width: 26px; height: 26px; border-radius: 7px; background: var(--seal);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .brand-mark span { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 13px; color: var(--navy); }
+  .brand-name { color: #fff; font-weight: 600; font-size: 14px; letter-spacing: -0.1px; }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 7px;
+    font-size: 13.5px; cursor: pointer; color: var(--navy-text-dim); background: transparent;
+    border: none; text-align: left; width: 100%; transition: background .12s, color .12s;
+  }
+  .nav-item:hover { color: var(--navy-text); }
+  .nav-item.active { color: #fff; background: var(--navy-active); }
+  .nav-item svg { flex-shrink: 0; }
+  .sidebar-footer {
+    margin-top: auto; padding: 10px; border-radius: 8px; background: var(--navy-active);
+    font-size: 12px; color: var(--navy-text-dim); line-height: 1.5;
+  }
+  .sidebar-footer strong { color: var(--navy-text); font-weight: 600; }
+
+  /* ---------- Main ---------- */
+  .main { flex: 1; min-width: 0; padding: 22px 32px 60px; overflow-y: auto; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; gap: 16px; }
+  .topbar .org { font-size: 12px; color: var(--slate); }
+  .topbar h1 { font-size: 20px; font-weight: 600; margin: 2px 0 0; letter-spacing: -0.2px; text-wrap: balance; }
+  .topbar-icons { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+  .topbar-icons svg { color: var(--slate); cursor: pointer; }
+  .avatar { width: 30px; height: 30px; border-radius: 99px; background: var(--border); flex-shrink: 0; }
+
+  /* ---------- Card ---------- */
+  .card {
+    display: block; width: 100%; text-align: left;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px; box-shadow: var(--shadow);
+  }
+  .card.clickable { cursor: pointer; transition: border-color .15s, transform .1s; }
+  .card.clickable:hover { border-color: var(--seal); }
+  .card.clickable:active { transform: translateY(1px); }
+  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 10px; }
+  .card-title {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: var(--slate);
+  }
+  .label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--slate);
+    margin-bottom: 6px; display: block;
+  }
+  .more-link {
+    margin-top: 14px; font-size: 12px; font-weight: 600; color: var(--ink);
+    display: inline-flex; align-items: center; gap: 2px; cursor: pointer; background: none; border: none; padding: 0;
+    font-family: inherit;
+  }
+  .more-link:hover { color: var(--seal); }
+
+  /* ---------- Pills / dots ---------- */
+  .pill {
+    font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 99px; letter-spacing: 0.2px;
+    display: inline-block; white-space: nowrap;
+  }
+  .pill-critical { background: color-mix(in srgb, var(--critical) 15%, transparent); color: var(--critical); }
+  .pill-high { background: color-mix(in srgb, var(--high) 15%, transparent); color: var(--high); }
+  .pill-medium { background: color-mix(in srgb, var(--medium) 15%, transparent); color: var(--medium); }
+  .pill-good { background: color-mix(in srgb, var(--good) 15%, transparent); color: var(--good); }
+  .pill-navy { background: color-mix(in srgb, var(--ink) 12%, transparent); color: var(--ink); }
+  .status-dot { display: inline-flex; align-items: center; gap: 8px; }
+  .status-dot .dot { width: 8px; height: 8px; border-radius: 99px; flex-shrink: 0; }
+  .status-dot .dot-ok { background: var(--good); }
+  .status-dot .dot-partial { background: var(--high); }
+  .status-dot .dot-missing { background: var(--critical); }
+  .status-dot span.txt { font-size: 13px; color: var(--slate); }
+  .risk-dot { width: 8px; height: 8px; border-radius: 99px; flex-shrink: 0; }
+  .risk-dot.critical { background: var(--critical); }
+  .risk-dot.high { background: var(--high); }
+  .risk-dot.medium { background: var(--medium); }
+  .risk-dot.low { background: var(--good); }
+
+  /* ---------- Overview ---------- */
+  .grid-overview { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 16px; }
+  .span-3 { grid-column: span 3; }
+  .span-2 { grid-column: span 2; }
+  .hero { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .ring-wrap { position: relative; width: 100px; height: 100px; flex-shrink: 0; }
+  .ring-wrap .ring-value { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring-wrap .ring-value b { font-size: 26px; font-weight: 600; line-height: 1; }
+  .ring-wrap .ring-value small { font-size: 9px; color: var(--slate); letter-spacing: 0.4px; }
+  .hero-mid { flex: 1; min-width: 240px; }
+  .hero-status { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .hero-status .word { font-size: 15px; font-weight: 600; }
+  .hero-status .delta { font-size: 13px; color: var(--good); display: inline-flex; align-items: center; gap: 2px; }
+  .subscores { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; }
+  .subscore { flex: 1; min-width: 70px; }
+  .subscore .sname { font-size: 11px; color: var(--slate); margin-bottom: 4px; }
+  .bar-track { height: 5px; background: var(--track); border-radius: 99px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 99px; }
+  .nba {
+    border-left: 1px solid var(--border); padding-left: 24px; width: 240px; flex-shrink: 0;
+  }
+  @media (max-width: 900px) { .nba { border-left: none; border-top: 1px solid var(--border); padding: 16px 0 0; width: 100%; } }
+  .nba .kicker { font-size: 12px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: var(--seal); margin-bottom: 8px; }
+  .nba .title { font-weight: 600; margin-bottom: 6px; }
+  .nba .meta { font-size: 12px; color: var(--slate); margin-bottom: 12px; }
+  .btn-primary {
+    background: var(--navy); color: #fff; border: none; border-radius: 8px; padding: 9px 14px;
+    font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    transition: background .12s;
+  }
+  .btn-primary:hover { background: color-mix(in srgb, var(--navy) 85%, var(--seal) 15%); }
+  .stat-row { display: flex; gap: 18px; flex-wrap: wrap; }
+  .stat-num { font-size: 26px; font-weight: 600; line-height: 1; }
+  .stat-lbl { font-size: 12px; color: var(--slate); margin-top: 4px; }
+  .fw-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .fw-row .fname { font-size: 13px; width: 82px; flex-shrink: 0; }
+  .fw-row .bar-track { flex: 1; }
+  .fw-row .fpct { font-size: 12px; width: 34px; text-align: right; flex-shrink: 0; }
+  .insight-card { background: var(--seal-soft); border: 1px solid var(--seal-soft-border); }
+  .insight-body { display: flex; gap: 12px; }
+  .insight-body p { margin: 0; font-size: 14px; line-height: 1.55; }
+
+  @media (max-width: 900px) {
+    .grid-overview { grid-template-columns: 1fr; }
+    .span-3, .span-2 { grid-column: 1 / -1; }
+  }
+
+  /* ---------- Compliance ---------- */
+  .fw-tabs { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .fw-tab { flex: 1; min-width: 180px; }
+  .fw-tab .pct { font-size: 24px; font-weight: 600; margin-bottom: 6px; }
+  .fw-tab .name { font-weight: 600; margin-bottom: 6px; }
+  .fw-tab .bar-track { margin-bottom: 8px; height: 6px; }
+  .fw-tab .breakdown { font-size: 12px; color: var(--slate); }
+  .req-row {
+    display: flex; align-items: center; justify-content: space-between; padding: 12px 4px; width: 100%;
+    border-bottom: 1px solid var(--border); gap: 16px;
+  }
+  .req-row:last-child { border-bottom: none; }
+  .req-row.clickable { cursor: pointer; }
+  .req-row.clickable:hover { color: var(--seal); }
+  .req-row .rtitle { font-size: 13.5px; }
+  .req-meta { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .detail-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; gap: 12px; }
+  .detail-eyebrow { font-size: 12px; color: var(--slate); margin-bottom: 4px; }
+  .detail-title { font-weight: 600; font-size: 16px; max-width: 560px; text-wrap: balance; }
+  .icon-btn { background: none; border: none; cursor: pointer; color: var(--slate); padding: 4px; border-radius: 6px; }
+  .icon-btn:hover { color: var(--ink); background: var(--surface-hover); }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  @media (max-width: 760px) { .detail-grid { grid-template-columns: 1fr; } }
+  .evidence-chip {
+    font-size: 13px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    padding: 6px 10px; display: inline-block;
+  }
+  .prose { font-size: 13px; color: var(--ink); opacity: 0.85; line-height: 1.6; }
+  .missing-list { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.9; opacity: 0.85; }
+
+  /* ---------- Risks ---------- */
+  .risks-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .risks-grid.with-detail { grid-template-columns: 1fr 380px; }
+  @media (max-width: 900px) { .risks-grid.with-detail { grid-template-columns: 1fr; } }
+  .risk-counts { display: flex; gap: 24px; margin-bottom: 20px; flex-wrap: wrap; }
+  .risk-count-num { font-size: 22px; font-weight: 600; line-height: 1; }
+  .risk-row {
+    display: flex; align-items: center; justify-content: space-between; padding: 13px 4px; width: 100%;
+    border-bottom: 1px solid var(--border); cursor: pointer; border-radius: 6px;
+  }
+  .risk-row:last-child { border-bottom: none; }
+  .risk-row:hover { color: var(--seal); }
+  .risk-row.selected { background: var(--surface-hover); }
+  .risk-row-main { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .risk-row-main .rtitle { font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .risk-row-meta { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+  .risk-stats { display: flex; gap: 24px; margin: 14px 0 16px; flex-wrap: wrap; }
+  .risk-stats .val { font-size: 20px; font-weight: 600; }
+  .fw-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+
+  /* ---------- Documents ---------- */
+  .doc-stats { display: flex; gap: 24px; margin-bottom: 18px; flex-wrap: wrap; }
+  .doc-stats .n { font-size: 22px; font-weight: 600; }
+  .doc-stats .l { font-size: 12px; color: var(--slate); margin-left: 4px; }
+  .doc-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 4px; border-bottom: 1px solid var(--border); gap: 16px; }
+  .doc-row:last-child { border-bottom: none; }
+  .doc-row .dname { font-size: 13.5px; }
+  .doc-row .doc-meta { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .doc-action { background: none; border: none; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 600; color: var(--ink); display: inline-flex; align-items: center; gap: 2px; }
+  .doc-action:hover { color: var(--seal); }
+
+  /* ---------- Actions ---------- */
+  .action-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 4px; border-bottom: 1px solid var(--border); gap: 16px; }
+  .action-row:last-child { border-bottom: none; }
+  .action-row.done .atitle { text-decoration: line-through; opacity: 0.5; }
+  .action-main { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .check-btn {
+    width: 20px; height: 20px; border-radius: 99px; border: 1.5px solid var(--border-strong); background: var(--surface);
+    cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: transparent; padding: 0;
+  }
+  .check-btn:hover { border-color: var(--good); }
+  .action-row.done .check-btn { background: var(--good); border-color: var(--good); color: #fff; }
+  .atitle { font-size: 13.5px; font-weight: 500; }
+  .ameta { font-size: 12px; color: var(--slate); margin-top: 2px; }
+  .ameta.overdue { color: var(--critical); }
+
+  /* ---------- AI Assistant ---------- */
+  .ai-head { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; color: var(--seal); }
+  .ai-head span { font-weight: 600; font-size: 13px; color: var(--ink); }
+  .chat-thread { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; max-height: 420px; overflow-y: auto; padding-right: 4px; }
+  .bubble { max-width: 78%; border-radius: 12px; padding: 10px 14px; font-size: 13.5px; line-height: 1.5; }
+  .bubble.user { align-self: flex-end; background: var(--navy); color: #fff; }
+  .bubble.ai { align-self: flex-start; background: var(--bg); border: 1px solid var(--border); }
+  .chat-form { display: flex; gap: 8px; }
+  .chat-form input {
+    flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 13px;
+    background: var(--surface); color: var(--ink); outline: none;
+  }
+  .chat-form input:focus { border-color: var(--seal); }
+
+  /* ---------- Placeholder ---------- */
+  .placeholder { padding: 40px 0; text-align: center; color: var(--slate); }
+  .placeholder svg { margin-bottom: 10px; opacity: 0.5; }
+  .placeholder p { font-size: 13.5px; margin: 0; }
+
+  /* ---------- Toast ---------- */
+  #toast {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(12px);
+    background: var(--navy); color: #fff; font-size: 13px; padding: 10px 16px; border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25); opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s;
+    z-index: 50; display: flex; align-items: center; gap: 8px;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---------- Responsive sidebar ---------- */
+  @media (max-width: 720px) {
+    .app { flex-direction: column; }
+    .sidebar { width: 100%; flex-direction: row; align-items: center; padding: 12px; gap: 16px; }
+    .brand { margin-bottom: 0; }
+    .nav { flex-direction: row; overflow-x: auto; gap: 2px; flex: 1; }
+    .nav-item span { display: none; }
+    .nav-item { padding: 8px; }
+    .sidebar-footer { display: none; }
+    .main { padding: 18px 16px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><span>H</span></div>
+      <span class="brand-name">HelderBeveiligd</span>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="sidebar-footer">Fase 1 · Bollenstreek pilot<br><strong>Acme Bloembollen B.V.</strong></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="org">Acme Bloembollen B.V.</div>
+        <h1 id="view-title">Overview</h1>
+      </div>
+      <div class="topbar-icons">
+        <span id="icon-search" aria-hidden="true"></span>
+        <span id="icon-bell" aria-hidden="true"></span>
+        <div class="avatar" aria-hidden="true"></div>
+      </div>
+    </div>
+    <div id="view-root"></div>
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ============================== ICONS ============================== */
+  var ICON_PATHS = {
+    shield: '<path d="M20 13c0 5-3.5 7.5-7.5 8.5-.16.05-.34.05-.5 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+    listChecks: '<path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/>',
+    alertTriangle: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+    fileText: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+    checkCircle: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+    messageSquare: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    fileBarChart: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M10 17v-5"/><path d="M13.5 17v-3"/><path d="M17 17v-1.5"/>',
+    settings: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
+    chevronRight: '<path d="m9 18 6-6-6-6"/>',
+    arrowUpRight: '<path d="M7 17 17 7"/><path d="M7 7h10v10"/>',
+    upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/>',
+    sparkles: '<path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/>',
+    x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+    search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+    bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>'
+  };
+  function icon(name, size, strokeWidth) {
+    size = size || 15; strokeWidth = strokeWidth || 2;
+    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + strokeWidth + '" stroke-linecap="round" stroke-linejoin="round">' + (ICON_PATHS[name] || '') + '</svg>';
+  }
+
+  /* ============================== DATA ============================== */
+  var NAV = [
+    { id: "overview", label: "Overview", icon: "shield" },
+    { id: "compliance", label: "Compliance", icon: "listChecks" },
+    { id: "risks", label: "Risks", icon: "alertTriangle" },
+    { id: "documents", label: "Documents", icon: "fileText" },
+    { id: "actions", label: "Actions", icon: "checkCircle" },
+    { id: "ai", label: "AI Assistant", icon: "messageSquare" },
+    { id: "reports", label: "Reports", icon: "fileBarChart" },
+    { id: "settings", label: "Settings", icon: "settings" }
+  ];
+  var VIEW_LABELS = { overview: "Overview", compliance: "Compliance", risks: "Risks", documents: "Documents", actions: "Actions", ai: "AI Assistant", reports: "Reports", settings: "Settings" };
+
+  var DATA = {
+    frameworks: [
+      {
+        id: "iso", name: "ISO 27001", score: 68, compliant: 42, partial: 18, missing: 12,
+        requirements: [
+          {
+            id: "a9", title: "A.9 — Toegangsrechten moeten passend beheerd worden.", status: "partial",
+            evidence: "Access_Control_Policy.pdf",
+            reasoning: "De policy beschrijft het toekennen van toegangsrechten, maar bevat geen formeel proces voor periodieke review van toegangsrechten.",
+            missing: ["Periodic access review procedure", "Reviewfrequentie", "Verantwoordelijke eigenaar"],
+            recommendation: "Implementeer een kwartaalproces voor toegangsreview.", risk: "High"
+          },
+          {
+            id: "a12", title: "A.12 — Operations security & malware protection.", status: "ok",
+            evidence: "Endpoint_Protection_Overzicht.pdf",
+            reasoning: "Alle endpoints draaien actuele anti-malware met centraal beheer en logging.",
+            missing: [], recommendation: "Geen actie vereist — blijf kwartaalcontroles uitvoeren.", risk: "Low"
+          },
+          {
+            id: "a17", title: "A.17 — Business continuity management.", status: "missing",
+            evidence: null,
+            reasoning: "Geen business continuity plan aangetroffen in geüploade documenten.",
+            missing: ["Business continuity plan", "Uitwijkprocedure", "RTO/RPO-definities"],
+            recommendation: "Genereer een eerste conceptplan met AI en laat dit reviewen.", risk: "High"
+          }
+        ]
+      },
+      { id: "gdpr", name: "GDPR / AVG", score: 82, compliant: 28, partial: 5, missing: 2, requirements: [] },
+      { id: "nis2", name: "NIS2", score: 54, compliant: 19, partial: 14, missing: 17, requirements: [] }
+    ],
+    risks: [
+      { id: 1, title: "Gebrek aan periodieke toegangsreviews", score: 16, likelihood: 4, impact: 4, frameworks: ["ISO 27001", "NIS2", "GDPR"], evidence: "Access_Control_Policy.pdf", action: "Implementeer kwartaalreview van toegangsrechten.", level: "critical" },
+      { id: 2, title: "Verouderde TLS-configuratie op klantportaal", score: 15, likelihood: 3, impact: 5, frameworks: ["NIS2"], evidence: "SSL-scan 14 aug", action: "Forceer TLS 1.2+ en schakel verouderde ciphers uit.", level: "critical" },
+      { id: 3, title: "Geen incident response plan", score: 15, likelihood: 3, impact: 5, frameworks: ["ISO 27001", "NIS2"], evidence: "—", action: "Genereer concept incident response plan met AI.", level: "critical" },
+      { id: 4, title: "Open RDP-poort op backupserver", score: 12, likelihood: 3, impact: 4, frameworks: ["NIS2"], evidence: "Poortscan 12 aug", action: "Sluit poort 3389 extern af, gebruik VPN.", level: "high" },
+      { id: 5, title: "Geen leveranciersbeoordeling supply chain", score: 10, likelihood: 2, impact: 5, frameworks: ["NIS2"], evidence: "—", action: "Stel een supplier security-checklist op.", level: "high" }
+    ],
+    riskCounts: { critical: 3, high: 7, medium: 12, low: 8 },
+    documents: [
+      { name: "Information Security Policy", status: "ok" },
+      { name: "Password Policy", status: "ok" },
+      { name: "Backup Policy", status: "ok" },
+      { name: "Encryption Policy", status: "ok" },
+      { name: "Acceptable Use Policy", status: "ok" },
+      { name: "Endpoint Protection Overzicht", status: "ok" },
+      { name: "Data Classification Policy", status: "ok" },
+      { name: "Physical Security Policy", status: "ok" },
+      { name: "Incident Response Plan", status: "partial" },
+      { name: "Access Control Policy", status: "partial" },
+      { name: "Change Management Procedure", status: "partial" },
+      { name: "Remote Access Policy", status: "partial" },
+      { name: "Business Continuity Plan", status: "missing" },
+      { name: "Supplier Security Policy", status: "missing" },
+      { name: "Risk Assessment Methodology", status: "missing" },
+      { name: "Data Retention & Disposal Policy", status: "missing" },
+      { name: "Vendor Risk Register", status: "missing" }
+    ],
+    actions: [
+      { title: "Implementeer kwartaalreview van toegangsrechten", due: "14 sep", framework: "ISO 27001", effort: "Medium", reduction: "Hoog", priority: "high", overdue: false, done: false },
+      { title: "Sluit RDP-poort op backupserver af", due: "20 aug", framework: "NIS2", effort: "Laag", reduction: "Hoog", priority: "high", overdue: true, done: false },
+      { title: "Stel incident response procedure op", due: "5 sep", framework: "ISO 27001 · NIS2", effort: "Hoog", reduction: "Hoog", priority: "medium", overdue: false, done: false },
+      { title: "Documenteer leveranciersbeoordeling", due: "1 okt", framework: "NIS2", effort: "Medium", reduction: "Medium", priority: "medium", overdue: false, done: false },
+      { title: "Vernieuw SSL-certificaat klantportaal", due: "22 aug", framework: "Technisch", effort: "Laag", reduction: "Medium", priority: "high", overdue: true, done: false }
+    ]
+  };
+
+  var aiThread = [
+    { role: "user", text: "Waarom is mijn compliance score gedaald?" },
+    { role: "ai", text: "Je score daalde van 74% naar 68% doordat de laatste documentbeoordeling twee requirements identificeerde die niet langer voldoende onderbouwd zijn met bewijs: periodieke toegangsreview (A.9) en business continuity (A.17). Beide zijn nu 'partial' of 'missing'." },
+    { role: "user", text: "Wat moet ik deze maand doen richting NIS2?" },
+    { role: "ai", text: "Drie dingen wegen het zwaarst: (1) sluit de open RDP-poort op de backupserver, (2) stel een incident response procedure op — de 24-uurs meldplicht vereist dit, (3) start een supplier security-checklist voor je belangrijkste leveranciers. Samen brengen deze je NIS2-score van 54% naar naar schatting 66%." }
+  ];
+
+  function aiReplyFor(question) {
+    var q = question.toLowerCase();
+    if (q.indexOf("score") !== -1) {
+      return "Je Organization Security Score staat op 72/100 (+8% deze maand). De grootste rem is toegangsbeheer: A.9 staat op 'partial' omdat er geen periodiek reviewproces is vastgelegd. Los je dat op, dan stijgt zowel je ISO- als NIS2-score merkbaar.";
+    }
+    if (q.indexOf("nis2") !== -1) {
+      return "Voor NIS2 (nu 54%) wegen drie acties het zwaarst: RDP-poort sluiten op de backupserver, een incident response procedure vastleggen (24-uurs meldplicht), en een supplier security-checklist opstellen. Samen brengen ze je richting ~66%.";
+    }
+    if (q.indexOf("document") !== -1) {
+      return "Je hebt 12 van de 17 vereiste documenten. De twee met de meeste impact op je score zijn het Business Continuity Plan (volledig ontbrekend) en de Access Control Policy (deels dekkend). Ik kan voor beide een AI-conceptversie voorbereiden.";
+    }
+    if (q.indexOf("risic") !== -1 || q.indexOf("risk") !== -1) {
+      return "Je hebt 3 kritieke risico's openstaan: gebrek aan toegangsreviews, verouderde TLS-configuratie, en het ontbreken van een incident response plan. Alle drie zijn direct gekoppeld aan bewijs uit je documenten en scans — te bekijken onder Risks.";
+    }
+    return "Op basis van je organisatiedata: je grootste openstaande gat is toegangsbeheer (A.9), gevolgd door business continuity. Wil je dat ik een concreet actieplan voor een van deze twee opstel?";
+  }
+
+  /* ============================== STATE ============================== */
+  var state = { view: "overview", framework: "iso", requirement: null, risk: null };
+
+  /* ============================== HELPERS ============================== */
+  function esc(s) {
+    if (s == null) return "";
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function docStats() {
+    var total = DATA.documents.length;
+    var missing = DATA.documents.filter(function (d) { return d.status === "missing"; }).length;
+    return { total: total, missing: missing, present: total - missing };
+  }
+  function riskLevelClass(level) { return level; }
+  function riskPillClass(level) {
+    return { critical: "pill-critical", high: "pill-high", medium: "pill-medium", low: "pill-good" }[level] || "pill-navy";
+  }
+  function statusDot(status) {
+    var map = { ok: ["dot-ok", "Compliant"], partial: ["dot-partial", "Gedeeltelijk"], missing: ["dot-missing", "Ontbreekt"] };
+    var m = map[status] || map.partial;
+    return '<span class="status-dot"><span class="dot ' + m[0] + '"></span><span class="txt">' + m[1] + '</span></span>';
+  }
+  function ring(value, size) {
+    size = size || 100;
+    var r = 44, c = 2 * Math.PI * r;
+    var dash = (value / 100) * c;
+    return '' +
+      '<div class="ring-wrap" style="width:' + size + 'px;height:' + size + 'px;">' +
+        '<svg viewBox="0 0 100 100" width="' + size + '" height="' + size + '">' +
+          '<circle cx="50" cy="50" r="' + r + '" fill="none" stroke="var(--track)" stroke-width="7"/>' +
+          '<circle cx="50" cy="50" r="' + r + '" fill="none" stroke="var(--seal)" stroke-width="7" ' +
+            'stroke-dasharray="' + dash.toFixed(1) + ' ' + c.toFixed(1) + '" stroke-linecap="round" transform="rotate(-90 50 50)"/>' +
+        '</svg>' +
+        '<div class="ring-value"><b class="mono">' + value + '</b><small>/ 100</small></div>' +
+      '</div>';
+  }
+  function toast(msg) {
+    var el = document.getElementById("toast");
+    el.innerHTML = icon("sparkles", 14) + '<span>' + esc(msg) + '</span>';
+    el.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { el.classList.remove("show"); }, 2600);
+  }
+
+  /* ============================== VIEWS ============================== */
+  function viewOverview() {
+    var f = DATA.frameworks;
+    var subscores = [["Compliance", 78], ["Documenten", 65], ["Risico's", 71], ["Beleid", 82], ["Acties", 64]];
+    var docs = docStats();
+    var html = '<div class="grid-overview">';
+
+    html += '<div class="card span-3"><div class="hero">' +
+      ring(72, 100) +
+      '<div class="hero-mid">' +
+        '<div class="card-title" style="margin-bottom:4px;">Organization Security Score</div>' +
+        '<div class="hero-status"><span class="word">Goed</span><span class="delta">' + icon("arrowUpRight", 14) + ' +8% sinds vorige maand</span></div>' +
+        '<div class="subscores">' + subscores.map(function (s) {
+          return '<div class="subscore"><div class="sname">' + s[0] + '</div><div class="bar-track"><div class="bar-fill" style="width:' + s[1] + '%;background:var(--navy);"></div></div></div>';
+        }).join("") + '</div>' +
+      '</div>' +
+      '<div class="nba">' +
+        '<div class="kicker">Next Best Action</div>' +
+        '<div class="title">Review je access control policy</div>' +
+        '<div class="meta">~30 min &nbsp;·&nbsp; Risicoreductie: hoog</div>' +
+        '<button class="btn-primary" data-goto="actions">Start actie ' + icon("chevronRight", 14) + '</button>' +
+      '</div>' +
+    '</div></div>';
+
+    html += '<button type="button" class="card clickable" data-goto="risks"><div class="card-head"><div class="card-title">Critical Risks</div></div>' +
+      '<div class="stat-row">' +
+        '<div><div class="stat-num" style="color:var(--critical)">' + DATA.riskCounts.critical + '</div><div class="stat-lbl">Critical</div></div>' +
+        '<div><div class="stat-num" style="color:var(--high)">' + DATA.riskCounts.high + '</div><div class="stat-lbl">High</div></div>' +
+        '<div><div class="stat-num" style="color:var(--medium)">' + DATA.riskCounts.medium + '</div><div class="stat-lbl">Medium</div></div>' +
+      '</div>' +
+      '<span class="more-link">Bekijk risico\'s ' + icon("chevronRight", 13) + '</span></button>';
+
+    html += '<button type="button" class="card clickable" data-goto="compliance"><div class="card-head"><div class="card-title">Compliance</div></div>' +
+      f.map(function (fw) {
+        return '<div class="fw-row"><span class="fname">' + esc(fw.name) + '</span><div class="bar-track"><div class="bar-fill" style="width:' + fw.score + '%;background:var(--seal);"></div></div><span class="fpct mono">' + fw.score + '%</span></div>';
+      }).join("") +
+      '<span class="more-link">Bekijk compliance ' + icon("chevronRight", 13) + '</span></button>';
+
+    html += '<button type="button" class="card clickable" data-goto="documents"><div class="card-head"><div class="card-title">Documents</div></div>' +
+      '<div class="stat-num mono">' + docs.present + '<span style="font-size:15px;color:var(--slate);font-weight:500;"> / ' + docs.total + '</span></div>' +
+      '<div style="font-size:12px;color:var(--critical);margin-top:2px;">' + docs.missing + ' ontbrekende documenten</div>' +
+      '<span class="more-link">Upload of genereer ' + icon("chevronRight", 13) + '</span></button>';
+
+    html += '<div class="card insight-card span-2"><div class="card-title" style="margin-bottom:14px;">AI Insight</div>' +
+      '<div class="insight-body">' + icon("sparkles", 18) + '<p>"Je grootste beveiligingsgat is op dit moment toegangsbeheer. We vonden inconsistente toegangsprocedures in 3 documenten."</p></div>' +
+      '<button class="more-link" style="color:var(--seal-ink)" data-goto="ai">Vraag de AI ' + icon("chevronRight", 13) + '</button></div>';
+
+    var openActions = DATA.actions.filter(function (a) { return !a.done; }).length;
+    var overdue = DATA.actions.filter(function (a) { return a.overdue && !a.done; }).length;
+    var highPriority = DATA.actions.filter(function (a) { return a.priority === "high" && !a.done; }).length;
+    html += '<button type="button" class="card clickable" data-goto="actions"><div class="card-head"><div class="card-title">Actions</div></div>' +
+      '<div class="stat-num mono">' + openActions + '</div><div class="stat-lbl">open acties</div>' +
+      '<div style="font-size:12px;color:var(--critical);margin-top:4px;">' + overdue + ' overdue &nbsp;·&nbsp; ' + highPriority + ' high priority</div></button>';
+
+    html += '</div>';
+    return html;
+  }
+
+  function viewCompliance() {
+    var fw = DATA.frameworks.filter(function (f) { return f.id === state.framework; })[0] || DATA.frameworks[0];
+    var req = null;
+    if (state.requirement) {
+      req = fw.requirements.filter(function (r) { return r.id === state.requirement; })[0] || null;
+    }
+    var html = '<div class="fw-tabs">' + DATA.frameworks.map(function (f) {
+      return '<button type="button" class="card clickable fw-tab" data-framework="' + f.id + '" style="' + (f.id === fw.id ? 'border-color:var(--seal);' : '') + '">' +
+        '<div class="name">' + esc(f.name) + '</div>' +
+        '<div class="pct mono">' + f.score + '%</div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + f.score + '%;background:var(--seal);"></div></div>' +
+        '<div class="breakdown">' + f.compliant + ' compliant · ' + f.partial + ' partial · ' + f.missing + ' missing</div>' +
+      '</button>';
+    }).join("") + '</div>';
+
+    if (req) {
+      html += '<div class="card"><div class="detail-head">' +
+        '<div><div class="detail-eyebrow">' + esc(fw.name) + ' · Requirement</div><div class="detail-title">' + esc(req.title) + '</div></div>' +
+        '<button class="icon-btn" data-close-requirement>' + icon("x", 18) + '</button>' +
+      '</div><div class="detail-grid"><div>' +
+        '<span class="label">Status</span>' + statusDot(req.status) +
+        '<span class="label" style="margin-top:16px;">Evidence gevonden</span><span class="evidence-chip mono">' + esc(req.evidence || "geen bewijs gevonden") + '</span>' +
+        '<span class="label" style="margin-top:16px;">AI-redenering</span><p class="prose">' + esc(req.reasoning) + '</p>' +
+      '</div><div>' +
+        (req.missing.length ? '<span class="label">Ontbrekend bewijs</span><ul class="missing-list">' + req.missing.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join("") + '</ul>' : '') +
+        '<span class="label" style="margin-top:16px;">Aanbeveling</span><p class="prose" style="margin-bottom:14px;">' + esc(req.recommendation) + '</p>' +
+        '<span class="' + riskPillClass(req.risk === "High" ? "critical" : req.risk === "Low" ? "low" : "high") + ' pill">Risico: ' + esc(req.risk) + '</span>' +
+        '<div><button class="btn-primary" style="margin-top:16px;" data-toast="Actie aangemaakt uit A.9-requirement.">Maak actie aan ' + icon("chevronRight", 14) + '</button></div>' +
+      '</div></div></div>';
+    } else {
+      var list = fw.requirements.length ? fw.requirements : null;
+      html += '<div class="card"><div class="card-title" style="margin-bottom:14px;">' + esc(fw.name) + ' — requirements</div>';
+      if (!list) {
+        html += '<div class="req-row"><span class="rtitle" style="color:var(--slate);">Geen requirement-detail beschikbaar voor dit framework in de prototype-dataset.</span></div>';
+      } else {
+        html += list.map(function (r) {
+          return '<button type="button" class="req-row clickable" data-requirement="' + r.id + '">' +
+            '<span class="rtitle">' + esc(r.title) + '</span>' +
+            '<div class="req-meta">' + statusDot(r.status) + icon("chevronRight", 14) + '</div>' +
+          '</button>';
+        }).join("");
+      }
+      html += '</div>';
+    }
+    return html;
+  }
+
+  function viewRisks() {
+    var sel = state.risk ? DATA.risks.filter(function (r) { return r.id === state.risk; })[0] : null;
+    var counts = DATA.riskCounts;
+    var html = '<div class="risks-grid' + (sel ? ' with-detail' : '') + '">';
+    html += '<div class="card"><div class="card-title" style="margin-bottom:14px;">Risk overview</div>' +
+      '<div class="risk-counts">' +
+        '<div><div class="risk-count-num" style="color:var(--critical)">' + counts.critical + '</div><div class="stat-lbl">Critical</div></div>' +
+        '<div><div class="risk-count-num" style="color:var(--high)">' + counts.high + '</div><div class="stat-lbl">High</div></div>' +
+        '<div><div class="risk-count-num" style="color:var(--medium)">' + counts.medium + '</div><div class="stat-lbl">Medium</div></div>' +
+        '<div><div class="risk-count-num" style="color:var(--good)">' + counts.low + '</div><div class="stat-lbl">Low</div></div>' +
+      '</div>' +
+      DATA.risks.map(function (r) {
+        return '<button type="button" class="risk-row' + (sel && sel.id === r.id ? ' selected' : '') + '" data-risk="' + r.id + '">' +
+          '<div class="risk-row-main"><span class="risk-dot ' + r.level + '"></span><span class="rtitle">' + esc(r.title) + '</span></div>' +
+          '<div class="risk-row-meta"><span class="mono" style="font-size:12.5px;color:var(--slate);">' + r.score + '/25</span>' + icon("chevronRight", 14) + '</div>' +
+        '</button>';
+      }).join("") +
+    '</div>';
+
+    if (sel) {
+      html += '<div class="card"><div class="detail-head">' +
+        '<span class="' + riskPillClass(sel.level) + ' pill">' + sel.level.toUpperCase() + '</span>' +
+        '<button class="icon-btn" data-close-risk>' + icon("x", 18) + '</button>' +
+      '</div>' +
+      '<div class="detail-title" style="margin-bottom:14px;">' + esc(sel.title) + '</div>' +
+      '<div class="risk-stats">' +
+        '<div><span class="label">Risk score</span><span class="val mono">' + sel.score + ' / 25</span></div>' +
+        '<div><span class="label">Likelihood</span><span class="val mono">' + sel.likelihood + '/5</span></div>' +
+        '<div><span class="label">Impact</span><span class="val mono">' + sel.impact + '/5</span></div>' +
+      '</div>' +
+      '<span class="label">Betrokken frameworks</span><div class="fw-chips">' + sel.frameworks.map(function (f) { return '<span class="pill pill-navy">' + esc(f) + '</span>'; }).join("") + '</div>' +
+      '<span class="label">Evidence</span><div class="mono" style="font-size:13px;margin-bottom:16px;">' + esc(sel.evidence) + '</div>' +
+      '<span class="label">Aanbevolen actie</span><p style="font-size:13.5px;margin:0 0 16px;">' + esc(sel.action) + '</p>' +
+      '<button class="btn-primary" data-toast="Actie aangemaakt vanuit risico.">Maak actie aan ' + icon("chevronRight", 14) + '</button>' +
+      '</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function viewDocuments() {
+    var docs = docStats();
+    var html = '<div class="card"><div class="card-head"><div class="card-title">Document health</div>' +
+      '<button class="btn-primary" data-toast="Documentupload gestart (demo).">' + icon("upload", 14) + ' Upload document</button></div>' +
+      '<div class="doc-stats">' +
+        '<div><span class="n mono">' + docs.total + '</span><span class="l">vereist</span></div>' +
+        '<div><span class="n mono" style="color:var(--good);">' + docs.present + '</span><span class="l">aanwezig</span></div>' +
+        '<div><span class="n mono" style="color:var(--critical);">' + docs.missing + '</span><span class="l">ontbreekt</span></div>' +
+      '</div>' +
+      DATA.documents.map(function (d) {
+        var actionLabel = d.status === "missing" ? "Genereer met AI" : (d.status !== "ok" ? "Aanvullen" : "");
+        return '<div class="doc-row"><span class="dname">' + esc(d.name) + '</span><div class="doc-meta">' + statusDot(d.status) +
+          (actionLabel ? '<button class="doc-action" data-toast="' + esc(actionLabel === "Genereer met AI" ? "AI-conceptdocument wordt gegenereerd…" : "Document geopend voor aanvulling.") + '">' + actionLabel + ' ' + icon("chevronRight", 12) + '</button>' : '') +
+        '</div></div>';
+      }).join("") +
+    '</div>';
+    return html;
+  }
+
+  function viewActions() {
+    var html = '<div class="card"><div class="card-title" style="margin-bottom:6px;">Action Center</div>' +
+      DATA.actions.map(function (a, i) {
+        return '<div class="action-row' + (a.done ? ' done' : '') + '">' +
+          '<div class="action-main">' +
+            '<button class="check-btn" data-toggle-action="' + i + '">' + icon("checkCircle", 13) + '</button>' +
+            '<span class="' + riskPillClass(a.priority === "high" ? "critical" : "medium") + ' pill">' + (a.priority === "high" ? "High" : "Medium") + '</span>' +
+            '<div><div class="atitle">' + esc(a.title) + '</div>' +
+            '<div class="ameta' + (a.overdue && !a.done ? ' overdue' : '') + '">Due ' + a.due + (a.overdue ? " · overdue" : "") + ' · ' + esc(a.framework) + ' · effort ' + esc(a.effort) + '</div></div>' +
+          '</div>' + icon("chevronRight", 14) +
+        '</div>';
+      }).join("") +
+    '</div>';
+    return html;
+  }
+
+  function viewAi() {
+    var html = '<div class="card">' +
+      '<div class="ai-head">' + icon("sparkles", 16) + '<span>AI Assistant — antwoordt uitsluitend op basis van jouw organisatiedata</span></div>' +
+      '<div class="chat-thread" id="chat-thread">' +
+        aiThread.map(function (m) { return '<div class="bubble ' + m.role + '">' + esc(m.text) + '</div>'; }).join("") +
+      '</div>' +
+      '<form class="chat-form" id="chat-form">' +
+        '<input type="text" id="chat-input" placeholder="Stel een vraag over je compliance-status..." autocomplete="off">' +
+        '<button class="btn-primary" type="submit">Verstuur</button>' +
+      '</form>' +
+    '</div>';
+    return html;
+  }
+
+  function viewPlaceholder(label) {
+    return '<div class="card"><div class="placeholder">' + icon("fileBarChart", 28, 1.5) + '<p>' + esc(label) + ' volgt in een latere release van deze prototype.</p></div></div>';
+  }
+
+  var VIEWS = {
+    overview: viewOverview, compliance: viewCompliance, risks: viewRisks,
+    documents: viewDocuments, actions: viewActions, ai: viewAi,
+    reports: function () { return viewPlaceholder("One-click compliance exports (PDF)"); },
+    settings: function () { return viewPlaceholder("Organisatie- en gebruikersinstellingen"); }
+  };
+
+  /* ============================== RENDER ============================== */
+  function renderNav() {
+    var nav = document.getElementById("nav");
+    nav.innerHTML = NAV.map(function (n) {
+      var active = state.view === n.id;
+      return '<button type="button" class="nav-item' + (active ? ' active' : '') + '" data-nav="' + n.id + '" aria-label="' + esc(n.label) + '"' + (active ? ' aria-current="page"' : '') + '>' + icon(n.icon, 15) + '<span aria-hidden="true">' + n.label + '</span></button>';
+    }).join("");
+  }
+
+  function render() {
+    renderNav();
+    document.getElementById("view-title").textContent = VIEW_LABELS[state.view];
+    document.getElementById("view-root").innerHTML = VIEWS[state.view]();
+    if (state.view === "ai") {
+      var thread = document.getElementById("chat-thread");
+      thread.scrollTop = thread.scrollHeight;
+      var form = document.getElementById("chat-form");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var input = document.getElementById("chat-input");
+        var val = input.value.trim();
+        if (!val) return;
+        aiThread.push({ role: "user", text: val });
+        aiThread.push({ role: "ai", text: aiReplyFor(val) });
+        input.value = "";
+        render();
+        document.getElementById("chat-input").focus();
+      });
+    }
+  }
+
+  /* ============================== EVENTS ============================== */
+  document.getElementById("icon-search").innerHTML = icon("search", 16);
+  document.getElementById("icon-bell").innerHTML = icon("bell", 16);
+
+  document.addEventListener("click", function (e) {
+    var navBtn = e.target.closest("[data-nav]");
+    if (navBtn) { state.view = navBtn.getAttribute("data-nav"); render(); return; }
+
+    var gotoBtn = e.target.closest("[data-goto]");
+    if (gotoBtn) { state.view = gotoBtn.getAttribute("data-goto"); render(); return; }
+
+    var fwBtn = e.target.closest("[data-framework]");
+    if (fwBtn) { state.framework = fwBtn.getAttribute("data-framework"); state.requirement = null; render(); return; }
+
+    var reqBtn = e.target.closest("[data-requirement]");
+    if (reqBtn) { state.requirement = reqBtn.getAttribute("data-requirement"); render(); return; }
+
+    var closeReq = e.target.closest("[data-close-requirement]");
+    if (closeReq) { state.requirement = null; render(); return; }
+
+    var riskBtn = e.target.closest("[data-risk]");
+    if (riskBtn) { state.risk = parseInt(riskBtn.getAttribute("data-risk"), 10); render(); return; }
+
+    var closeRisk = e.target.closest("[data-close-risk]");
+    if (closeRisk) { state.risk = null; render(); return; }
+
+    var toggleAction = e.target.closest("[data-toggle-action]");
+    if (toggleAction) {
+      var idx = parseInt(toggleAction.getAttribute("data-toggle-action"), 10);
+      DATA.actions[idx].done = !DATA.actions[idx].done;
+      render();
+      return;
+    }
+
+    var toastBtn = e.target.closest("[data-toast]");
+    if (toastBtn) { toast(toastBtn.getAttribute("data-toast")); return; }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
