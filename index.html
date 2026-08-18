@@ -244,6 +244,19 @@
   .band-stats div b { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 26px; color: #fff; }
   .band-stats div span { font-size: 12px; color: var(--navy-dim); }
 
+  /* ---------------- FAQ ---------------- */
+  .faq-list { display: flex; flex-direction: column; gap: 12px; max-width: 760px; }
+  .faq-item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+  .faq-item summary {
+    padding: 18px 20px; font-weight: 600; font-size: 14.5px; cursor: pointer; list-style: none;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary .chev { flex-shrink: 0; color: var(--slate-soft); transition: transform .15s; }
+  .faq-item[open] summary .chev { transform: rotate(180deg); }
+  .faq-item .faq-a { padding: 0 20px 18px; font-size: 13.5px; line-height: 1.65; color: var(--slate); margin: 0; }
+  .faq-item .faq-a strong { color: var(--ink); font-weight: 600; }
+
   /* ---------------- Contact ---------------- */
   .contact-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 48px; align-items: start; }
   @media (max-width: 860px) { .contact-grid { grid-template-columns: 1fr; } }
@@ -294,6 +307,7 @@
       <a class="navlink" href="#frameworks">Frameworks</a>
       <a class="navlink" href="#voor-wie">Voor wie</a>
       <a class="navlink" href="#onderscheid">Onderscheid</a>
+      <a class="navlink" href="#faq">FAQ</a>
     </nav>
     <div class="nav-cta">
       <a class="btn btn-ghost" href="dashboard.html" target="_blank" rel="noopener">Live demo</a>
@@ -309,6 +323,7 @@
     <a class="navlink" href="#frameworks">Frameworks</a>
     <a class="navlink" href="#voor-wie">Voor wie</a>
     <a class="navlink" href="#onderscheid">Onderscheid</a>
+      <a class="navlink" href="#faq">FAQ</a>
     <a class="btn btn-ghost" href="dashboard.html" target="_blank" rel="noopener">Live demo bekijken ↗</a>
     <a class="btn btn-primary" href="#contact">Pilot aanvragen</a>
   </div>
@@ -521,6 +536,47 @@
     </div>
   </section>
 
+  <section id="faq" style="background:var(--surface-alt);">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Veelgestelde vragen</div>
+        <h2>Voordat je iets uploadt.</h2>
+      </div>
+      <div class="faq-list reveal">
+        <details class="faq-item">
+          <summary>Waar staat mijn data, en wie heeft er toegang toe?
+            <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </summary>
+          <p class="faq-a">Data wordt gehost binnen de EU, versleuteld opgeslagen. Alleen jij en de gebruikers die je zelf toevoegt (bijv. je IT-manager of adviseur) hebben toegang — <strong>HelderBeveiligd-medewerkers krijgen geen standaardtoegang</strong> tot je documenten. We gebruiken je documenten nooit om AI-modellen te trainen; ze worden uitsluitend gebruikt om jouw eigen score en acties te berekenen. Meer details staan in ons <a href="privacy.html" style="color:var(--seal-ink);">privacybeleid</a>.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Wat kost HelderBeveiligd na de pilot?
+            <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </summary>
+          <p class="faq-a">Dat bepalen we tijdens de pilotfase samen met de eerste deelnemers — een reëel, transparant tarief passend bij je bedrijfsgrootte en het aantal normenkaders dat je gebruikt. Als pilotdeelnemer denk je vooraf mee en zit je nergens aan vast.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Moet ik dit zelf beheren, of doet mijn IT-partner/MSP dat?
+            <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </summary>
+          <p class="faq-a">Beide kan. Het dashboard is zelf te gebruiken zonder technische kennis, én je kunt je MSP, accountant of adviseur als extra gebruiker toevoegen zodat zij meekijken of het voor je beheren.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Hoeveel tijd kost de eerste upload-ronde?
+            <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </summary>
+          <p class="faq-a">Reken op 30–60 minuten om je bestaande documenten (beleid, procedures) te uploaden — de meeste bedrijven hebben er al een aantal, ook als ze niet compleet zijn. Daarna doet de AI het analysewerk; jij beoordeelt alleen de gevonden gaten.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Vervangt dit mijn accountant of IT-partner?
+            <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </summary>
+          <p class="faq-a">Nee — het is juist bedoeld om hen beter te ondersteunen. Zij krijgen concreet bewijs en een actielijst in plaats van een losse vragenlijst, wat het compliance-gesprek juist makkelijker maakt.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
   <section id="contact">
     <div class="wrap">
       <div class="contact-grid reveal">
@@ -570,6 +626,7 @@
         <a href="#bewijs">Bewijs</a>
         <a href="#frameworks">Frameworks</a>
         <a href="#onderscheid">Onderscheid</a>
+        <a href="#faq">FAQ</a>
         <a href="dashboard.html" target="_blank" rel="noopener">Live demo ↗</a>
         <a href="privacy.html">Privacybeleid</a>
       </div>
