@@ -549,7 +549,8 @@
               </div>
             </div>
             <div class="field"><label for="f-bericht">Bericht (optioneel)</label><textarea id="f-bericht"></textarea></div>
-            <button type="submit" class="btn btn-primary btn-lg">Vraag een pilotgesprek aan</button>
+            <button type="submit" class="btn btn-primary btn-lg" id="pilot-submit">Vraag een pilotgesprek aan</button>
+            <p style="font-size:11.5px;color:var(--slate-soft);margin:0;">Door te versturen ga je akkoord met ons <a href="privacy.html" style="color:inherit;text-decoration:underline;">privacybeleid</a>.</p>
           </form>
         </div>
       </div>
@@ -570,6 +571,7 @@
         <a href="#frameworks">Frameworks</a>
         <a href="#onderscheid">Onderscheid</a>
         <a href="dashboard.html" target="_blank" rel="noopener">Live demo ↗</a>
+        <a href="privacy.html">Privacybeleid</a>
       </div>
     </div>
     <div class="foot-note">HelderBeveiligd — conceptprototype, fase 1 Bollenstreek pilot. Geen live productieomgeving.</div>
@@ -606,20 +608,55 @@
   }
 
   var form = document.getElementById("pilot-form");
+  var submitBtn = document.getElementById("pilot-submit");
+  var FORM_ENDPOINT = "https://formsubmit.co/ajax/levihekman21@gmail.com";
+
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    var naam = document.getElementById("f-naam").value.trim() || "daar";
+    var naam = document.getElementById("f-naam").value.trim();
+    var bedrijf = document.getElementById("f-bedrijf").value.trim();
+    var email = document.getElementById("f-email").value.trim();
+    var rol = document.getElementById("f-rol").value;
+    var bericht = document.getElementById("f-bericht").value.trim();
     var panelEl = document.getElementById("contact-panel");
-    panelEl.innerHTML =
-      '<div class="confirm-panel">' +
-        '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>' +
-        '<h3>Bedankt, ' + naam.replace(/</g, "&lt;") + '.</h3>' +
-        '<p>We nemen binnen 1 werkdag contact op om een pilotgesprek in te plannen.</p>' +
-      '</div>';
     var toast = document.getElementById("toast");
-    toast.textContent = "Pilotaanvraag verzonden (demo).";
-    toast.classList.add("show");
-    setTimeout(function () { toast.classList.remove("show"); }, 2600);
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Versturen…";
+
+    fetch(FORM_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({
+        Naam: naam,
+        Bedrijf: bedrijf,
+        "E-mail": email,
+        Rol: rol,
+        Bericht: bericht || "(geen bericht)",
+        _subject: "Nieuwe pilotaanvraag — HelderBeveiligd",
+        _template: "table",
+        _captcha: "false"
+      })
+    })
+      .then(function (res) {
+        if (!res.ok) { throw new Error("Verzenden mislukt"); }
+        panelEl.innerHTML =
+          '<div class="confirm-panel">' +
+            '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>' +
+            '<h3>Bedankt, ' + (naam.replace(/</g, "&lt;") || "daar") + '.</h3>' +
+            '<p>We nemen binnen 1 werkdag contact op om een pilotgesprek in te plannen.</p>' +
+          '</div>';
+        toast.textContent = "Pilotaanvraag verzonden.";
+        toast.classList.add("show");
+        setTimeout(function () { toast.classList.remove("show"); }, 2600);
+      })
+      .catch(function () {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Vraag een pilotgesprek aan";
+        toast.textContent = "Verzenden mislukt — mail ons rechtstreeks via levihekman21@gmail.com.";
+        toast.classList.add("show");
+        setTimeout(function () { toast.classList.remove("show"); }, 4000);
+      });
   });
 })();
 </script>
