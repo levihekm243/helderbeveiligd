@@ -244,6 +244,17 @@
   .band-stats div b { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 26px; color: #fff; }
   .band-stats div span { font-size: 12px; color: var(--navy-dim); }
 
+  /* ---------------- Roadmap ---------------- */
+  .rm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 860px) { .rm-grid { grid-template-columns: 1fr; } }
+  .rm-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+  .rm-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .rm-card svg { color: var(--seal); flex-shrink: 0; }
+  .rm-card h3 { font-family: 'Inter', sans-serif; font-size: 15.5px; font-weight: 600; margin: 0; }
+  .rm-card p { font-size: 13.5px; line-height: 1.6; color: var(--slate); margin: 0; }
+  .rm-card ul { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.65; color: var(--slate); }
+  .rm-card ul strong { color: var(--ink); font-weight: 600; }
+
   /* ---------------- FAQ ---------------- */
   .faq-list { display: flex; flex-direction: column; gap: 12px; max-width: 760px; }
   .faq-item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
@@ -520,6 +531,55 @@
     </div>
   </section>
 
+  <section id="roadmap">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Waar we naartoe werken</div>
+        <h2>Drie uitbreidingen die we voorbereiden.</h2>
+        <p class="lede">Nog geen onderdeel van de pilot, maar wel waar het product naartoe groeit — mocht dit relevant voor je zijn, laat het ons weten bij het pilotgesprek.</p>
+      </div>
+      <div class="rm-grid reveal">
+        <div class="rm-card">
+          <div class="rm-card-head">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.5 8.5-.16.05-.34.05-.5 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+            <span class="pill pill-medium">Op de roadmap</span>
+          </div>
+          <h3>Compliance-bewijs voor je cyberverzekering</h3>
+          <p>Een cyberverzekering afsluiten of verlengen wordt steeds complexer — verzekeraars willen bewijs zien. Ons verzekeraarsrapport zet je score en onderbouwing om in een pasklaar PDF-dossier, in de taal die verzekeraars spreken.</p>
+          <ul>
+            <li><strong>Pasklaar format</strong> — opgebouwd zoals verzekeraars het willen zien</li>
+            <li><strong>Sterkere positie</strong> — toon aantoonbaar risicobeheer bij premiegesprekken</li>
+          </ul>
+        </div>
+        <div class="rm-card">
+          <div class="rm-card-head">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>
+            <span class="pill pill-medium">Op de roadmap</span>
+          </div>
+          <h3>White-label voor accountants &amp; IT-dienstverleners</h3>
+          <p>Jouw klanten in de Bollenstreek vertrouwen op jouw advies. Bied ons dashboard aan in je eigen huisstijl, zodat je meerwaarde toevoegt zonder zelf iets te hoeven bouwen.</p>
+          <ul>
+            <li><strong>Jouw merk, onze motor</strong> — platform volledig in jouw huisstijl</li>
+            <li><strong>Nieuw verdienmodel</strong> — licentie- of revenue-share-optie</li>
+            <li><strong>Klantbinding</strong> — volledig overzicht over de status van je cliënten</li>
+          </ul>
+        </div>
+        <div class="rm-card">
+          <div class="rm-card-head">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+            <span class="pill pill-medium">Op de roadmap</span>
+          </div>
+          <h3>Losse documentgenerator, on-demand</h3>
+          <p>Weet je al waar de gaten zitten, maar kost het schrijven te veel tijd? Neem per stuk een conceptdocument af — van een AVG-verwerkingsregister tot ISO-beleidsstukken — klaar om door je adviseur te laten toetsen.</p>
+          <ul>
+            <li><strong>Geen vast contract</strong> — eenmalig betalen per document</li>
+            <li><strong>Van gat naar concept</strong> — jouw input direct omgezet in een professioneel conceptdocument</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section>
     <div class="wrap reveal">
       <div class="band">
@@ -627,6 +687,7 @@
         <a href="#frameworks">Frameworks</a>
         <a href="#onderscheid">Onderscheid</a>
         <a href="#faq">FAQ</a>
+        <a href="#roadmap">Roadmap</a>
         <a href="dashboard.html" target="_blank" rel="noopener">Live demo ↗</a>
         <a href="privacy.html">Privacybeleid</a>
       </div>
