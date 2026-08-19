@@ -762,10 +762,68 @@
     return '<div class="card"><div class="placeholder">' + icon("fileBarChart", 28, 1.5) + '<p>' + esc(label) + ' volgt in een latere release van deze prototype.</p></div></div>';
   }
 
+  var REPORT_SECTIONS = [
+    { title: "Managementsamenvatting", desc: "Organization Security Score, trend t.o.v. vorige periode en risicoprofiel op één pagina — geschikt om vooraan het dossier te zetten." },
+    { title: "Technische controle", desc: "Resultaten van doorlopende poort-, SSL/TLS- en CMS/software-scans, met datum van laatste meting." },
+    { title: "Beleidsmatige dekking", desc: "Status per domein (toegangsbeheer, back-up, incident response, leveranciers) getoetst aan ISO 27001, NIS2 en AVG." },
+    { title: "Openstaande risico's & mitigatieplan", desc: "Kritieke en hoge risico's mét de reeds geplande of lopende acties en een tijdlijn — toont proactief risicobeheer, niet alleen de gaten." },
+    { title: "Bewijsbijlage", desc: "Evidence per requirement (documentnaam, scandatum) zodat een auditor of verzekeraar de onderbouwing kan naslaan." }
+  ];
+
+  function reportReadiness() {
+    var fw = DATA.frameworks[0]; // ISO 27001 heeft requirement-detail in deze prototype-dataset
+    var blockingReqs = fw.requirements.filter(function (r) { return r.status !== "ok"; });
+    var docGaps = DATA.documents.filter(function (d) { return d.status !== "ok"; });
+    return { blockingReqs: blockingReqs, docGaps: docGaps, ready: blockingReqs.length === 0 && docGaps.length === 0 };
+  }
+
+  function viewReports() {
+    var readiness = reportReadiness();
+    var html = '';
+
+    html += '<div class="card insight-card"><div class="card-head">' +
+      '<div class="card-title">Verzekeraarsrapport-export</div><span class="pill pill-navy">Nieuw</span></div>' +
+      '<div class="insight-body">' + icon("sparkles", 18) +
+      '<p>Eén pasklaar PDF-dossier, opgebouwd in de taal die cyberverzekeraars spreken. Toon aantoonbaar aan hoe goed je beschermd bent — verzekeraars belonen dat vaak met een lagere premie bij het afsluiten of verlengen van je polis.</p></div></div>';
+
+    if (!readiness.ready) {
+      html += '<div class="card" style="border-color:var(--critical);">' +
+        '<div class="card-head"><div class="card-title" style="color:var(--critical);">Nog niet exportklaar</div>' +
+        '<span class="pill pill-critical">' + (readiness.blockingReqs.length + readiness.docGaps.length) + ' openstaande punten</span></div>' +
+        '<p class="prose" style="margin-top:0;">Een verzekeraar leest dit dossier ook als het niet compliant is. Los onderstaande punten op — of laat zien dat de actie al gepland staat — voordat je exporteert, anders werkt het rapport tegen je in plaats van voor je.</p>' +
+        (readiness.blockingReqs.length ? '<span class="label" style="margin-top:10px;">Openstaande requirements</span>' + readiness.blockingReqs.map(function (r) {
+          return '<div class="req-row"><span class="rtitle">' + esc(r.title) + '</span><div class="req-meta">' + statusDot(r.status) + '</div></div>';
+        }).join("") : "") +
+        (readiness.docGaps.length ? '<span class="label" style="margin-top:10px;">Ontbrekende of onvolledige documenten</span>' + readiness.docGaps.map(function (d) {
+          return '<div class="doc-row"><span class="dname">' + esc(d.name) + '</span><div class="doc-meta">' + statusDot(d.status) + '</div></div>';
+        }).join("") : "") +
+        '<button class="btn-primary" style="margin-top:14px;" data-goto="actions">Bekijk gerelateerde acties ' + icon("chevronRight", 14) + '</button>' +
+      '</div>';
+    }
+
+    html += '<div class="grid-overview"><div class="card span-2"><div class="card-head"><div class="card-title">Rapportopbouw</div></div>';
+    html += REPORT_SECTIONS.map(function (s, i) {
+      return '<div class="req-row"><div style="display:flex;align-items:flex-start;gap:12px;">' +
+        '<span class="mono" style="color:var(--slate);font-size:12px;padding-top:2px;">' + (i + 1) + '</span>' +
+        '<div><div class="rtitle" style="font-weight:600;">' + esc(s.title) + '</div>' +
+        '<div style="font-size:12.5px;color:var(--slate);margin-top:2px;line-height:1.5;">' + esc(s.desc) + '</div></div></div></div>';
+    }).join("");
+    html += '</div>';
+
+    html += '<div class="card"><div class="card-head"><div class="card-title">Export</div></div>' +
+      '<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">' + ring(72, 76) +
+      '<div><div class="stat-lbl">Huidige Security Score</div><div style="font-size:12.5px;color:var(--slate);margin-top:2px;">Wordt automatisch als managementsamenvatting opgenomen.</div></div></div>' +
+      '<button class="btn-primary" style="width:100%;justify-content:center;" data-toast="PDF-dossier wordt gegenereerd… (demo)">' + icon("fileBarChart", 14) + ' Genereer verzekeraarsrapport</button>' +
+      '<div style="font-size:11.5px;color:var(--slate);margin-top:10px;line-height:1.5;">De AI-analyse in dit rapport is ondersteunend bewijs; de organisatie blijft verantwoordelijk voor de juistheid van gerapporteerde gegevens.</div>' +
+    '</div></div>';
+
+    return html;
+  }
+
   var VIEWS = {
     overview: viewOverview, compliance: viewCompliance, risks: viewRisks,
     documents: viewDocuments, actions: viewActions, ai: viewAi,
-    reports: function () { return viewPlaceholder("One-click compliance exports (PDF)"); },
+    reports: viewReports,
     settings: function () { return viewPlaceholder("Organisatie- en gebruikersinstellingen"); }
   };
 
