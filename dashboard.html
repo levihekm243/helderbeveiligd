@@ -268,6 +268,8 @@
     padding: 6px 10px; display: inline-block;
   }
   .prose { font-size: 13px; color: var(--ink); opacity: 0.85; line-height: 1.6; }
+  .disclaimer { font-size: 11.5px; color: var(--slate); line-height: 1.55; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .disclaimer.full { font-size: 11px; }
   .missing-list { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.9; opacity: 0.85; }
 
   /* ---------- Risks ---------- */
@@ -493,6 +495,13 @@
     ]
   };
 
+  var DISCLAIMERS = {
+    short: "Deze score is een door software en AI gegenereerde inschatting, geen certificering of formeel oordeel. Bedoeld ter ondersteuning van uw eigen beoordeling.",
+    full: "Dit rapport is gegenereerd door het HelderBeveiligd-platform op basis van geautomatiseerde technische scans en AI-ondersteunde documentanalyse. Het vormt uitsluitend een inschatting ten behoeve van interne oriëntatie door de organisatie en vormt uitdrukkelijk geen certificering, formele audit, auditverklaring of accountantsverklaring in de zin van de daarvoor geldende beroeps- en regelgeving. Aan dit rapport kunnen geen rechten worden ontleend jegens HelderBeveiligd door partijen die dit rapport ontvangen van de organisatie. Voor een formeel oordeel dient een daartoe bevoegde, onafhankelijke certificerende instelling, auditor of accountant te worden geraadpleegd.",
+    concept: "AI-gegenereerd concept. Dit document is een startpunt, geen kant-en-klaar beleidsdocument. Laat het inhoudelijk reviewen en vaststellen door een bevoegde functionaris binnen uw organisatie voordat het in gebruik wordt genomen.",
+    assistant: "U spreekt met een AI-assistent die antwoordt op basis van uw organisatiedata. Antwoorden kunnen onjuist of onvolledig zijn en vormen geen professioneel advies."
+  };
+
   var aiThread = [
     { role: "user", text: "Waarom is mijn compliance score gedaald?" },
     { role: "ai", text: "Je score daalde van 74% naar 68% doordat de laatste documentbeoordeling twee requirements identificeerde die niet langer voldoende onderbouwd zijn met bewijs: periodieke toegangsreview (A.9) en business continuity (A.17). Beide zijn nu 'partial' of 'missing'." },
@@ -583,7 +592,7 @@
         '<div class="meta">~30 min &nbsp;·&nbsp; Risicoreductie: hoog</div>' +
         '<button class="btn-primary" data-goto="actions">Start actie ' + icon("chevronRight", 14) + '</button>' +
       '</div>' +
-    '</div></div>';
+    '</div><div class="disclaimer">' + esc(DISCLAIMERS.short) + '</div></div>';
 
     html += '<button type="button" class="card clickable" data-goto="risks"><div class="card-head"><div class="card-title">Critical Risks</div></div>' +
       '<div class="stat-row">' +
@@ -606,7 +615,8 @@
 
     html += '<div class="card insight-card span-2"><div class="card-title" style="margin-bottom:14px;">AI Insight</div>' +
       '<div class="insight-body">' + icon("sparkles", 18) + '<p>"Je grootste beveiligingsgat is op dit moment toegangsbeheer. We vonden inconsistente toegangsprocedures in 3 documenten."</p></div>' +
-      '<button class="more-link" style="color:var(--seal-ink)" data-goto="ai">Vraag de AI ' + icon("chevronRight", 13) + '</button></div>';
+      '<button class="more-link" style="color:var(--seal-ink)" data-goto="ai">Vraag de AI ' + icon("chevronRight", 13) + '</button>' +
+      '<div class="disclaimer" style="border-top:none;margin-top:10px;padding-top:0;">' + esc(DISCLAIMERS.short) + '</div></div>';
 
     var openActions = DATA.actions.filter(function (a) { return !a.done; }).length;
     var overdue = DATA.actions.filter(function (a) { return a.overdue && !a.done; }).length;
@@ -633,6 +643,7 @@
         '<div class="breakdown">' + f.compliant + ' compliant · ' + f.partial + ' partial · ' + f.missing + ' missing</div>' +
       '</button>';
     }).join("") + '</div>';
+    html += '<div class="disclaimer" style="border-top:none;padding-top:0;margin:-8px 0 20px;">' + esc(DISCLAIMERS.short) + '</div>';
 
     if (req) {
       html += '<div class="card"><div class="detail-head">' +
@@ -647,7 +658,8 @@
         '<span class="label" style="margin-top:16px;">Aanbeveling</span><p class="prose" style="margin-bottom:14px;">' + esc(req.recommendation) + '</p>' +
         '<span class="' + riskPillClass(req.risk === "High" ? "critical" : req.risk === "Low" ? "low" : "high") + ' pill">Risico: ' + esc(req.risk) + '</span>' +
         '<div><button class="btn-primary" style="margin-top:16px;" data-toast="Actie aangemaakt uit A.9-requirement.">Maak actie aan ' + icon("chevronRight", 14) + '</button></div>' +
-      '</div></div></div>';
+      '</div></div>' +
+      '<div class="disclaimer">' + esc(DISCLAIMERS.short) + '</div></div>';
     } else {
       var list = fw.requirements.length ? fw.requirements : null;
       html += '<div class="card"><div class="card-title" style="margin-bottom:14px;">' + esc(fw.name) + ' — requirements</div>';
@@ -721,6 +733,7 @@
           (actionLabel ? '<button class="doc-action" data-toast="' + esc(actionLabel === "Genereer met AI" ? "AI-conceptdocument wordt gegenereerd…" : "Document geopend voor aanvulling.") + '">' + actionLabel + ' ' + icon("chevronRight", 12) + '</button>' : '') +
         '</div></div>';
       }).join("") +
+      '<div class="disclaimer">' + esc(DISCLAIMERS.concept) + '</div>' +
     '</div>';
     return html;
   }
@@ -746,7 +759,7 @@
       '<div class="ai-head">' + icon("sparkles", 16) + '<span>AI Assistant — antwoordt uitsluitend op basis van jouw organisatiedata</span>' +
         '<span class="pill pill-medium" style="margin-left:auto;">Gesimuleerde demo</span>' +
       '</div>' +
-      '<p style="font-size:12.5px;color:var(--slate);margin:-8px 0 16px;">Deze antwoorden zijn vooraf gescript op basis van voorbeelddata, ter illustratie van het productconcept — nog geen live AI-verbinding.</p>' +
+      '<p style="font-size:12.5px;color:var(--slate);margin:-8px 0 16px;">' + esc(DISCLAIMERS.assistant) + ' In dit prototype zijn de antwoorden bovendien vooraf gescript op basis van voorbeelddata, ter illustratie van het productconcept.</p>' +
       '<div class="chat-thread" id="chat-thread">' +
         aiThread.map(function (m) { return '<div class="bubble ' + m.role + '">' + esc(m.text) + '</div>'; }).join("") +
       '</div>' +
@@ -814,7 +827,7 @@
       '<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">' + ring(72, 76) +
       '<div><div class="stat-lbl">Huidige Security Score</div><div style="font-size:12.5px;color:var(--slate);margin-top:2px;">Wordt automatisch als managementsamenvatting opgenomen.</div></div></div>' +
       '<button class="btn-primary" style="width:100%;justify-content:center;" data-toast="PDF-dossier wordt gegenereerd… (demo)">' + icon("fileBarChart", 14) + ' Genereer verzekeraarsrapport</button>' +
-      '<div style="font-size:11.5px;color:var(--slate);margin-top:10px;line-height:1.5;">De AI-analyse in dit rapport is ondersteunend bewijs; de organisatie blijft verantwoordelijk voor de juistheid van gerapporteerde gegevens.</div>' +
+      '<div class="disclaimer full"><span class="label" style="margin-bottom:6px;">Op elke pagina van het PDF-rapport</span>' + esc(DISCLAIMERS.full) + '</div>' +
     '</div></div>';
 
     return html;
