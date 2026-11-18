@@ -262,7 +262,12 @@
   @media (max-width: 860px) { .band { grid-template-columns: 1fr; } }
   .band h2 { color: #fff; font-size: clamp(1.5rem, 2.6vw, 2.1rem); margin-bottom: 12px; }
   .band p { color: var(--navy-dim); font-size: 14.5px; line-height: 1.6; max-width: 46ch; }
-  .band-stats { display: flex; gap: 28px; flex-wrap: wrap; }
+  .band-stats { display: grid; grid-template-columns: repeat(3, auto); gap: 28px; justify-content: start; }
+  @media (max-width: 640px) { .band-stats { grid-template-columns: 1fr 1fr; } }
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600;
+          letter-spacing: 0.04em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px;
+          border: 1px solid var(--line-strong); color: var(--slate); background: var(--surface-alt); }
+  .pill-medium { color: var(--seal-ink); border-color: var(--seal-soft-border); background: var(--seal-soft); }
   .band-stats div b { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 26px; color: #fff; }
   .band-stats div span { font-size: 12px; color: var(--navy-dim); }
 
@@ -397,7 +402,7 @@
             <text x="50" y="57" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="30" font-weight="600" fill="#fff">H</text>
           </svg>
           <div class="doc-card-head">
-            <span class="tag">Organization Security Score</span>
+            <span class="tag">Organisatie-securityscore</span>
           </div>
           <div class="doc-score-row">
             <div class="doc-ring">
@@ -428,7 +433,7 @@
         <div>
           <div class="eyebrow">Waarom HelderBeveiligd</div>
           <h2>Technisch veilig is niet hetzelfde als aantoonbaar compliant.</h2>
-          <p class="lede" style="margin-top:16px;">Scanningplatforms vertellen je of je poorten, SSL en endpoints in orde zijn. Waardevol — maar het is een infrastructuurstatus, geen bewijsvoering. Geen van de bestaande spelers leest je beleid, koppelt het aan een normenkader en laat zien wélk document welke control dekt en wat er nog ontbreekt.</p>
+          <p class="lede" style="margin-top:16px;">Scanningplatforms vertellen je of je poorten, SSL en endpoints in orde zijn. Waardevol — maar het is een infrastructuurstatus, geen bewijsvoering. De meeste scanners lezen je beleid niet, koppelen het niet aan een normenkader en laten niet zien wélk document welke control dekt en wat er nog ontbreekt.</p>
         </div>
         <blockquote class="seal-quote">
           "Technische scanners vertellen je of je veilig bent. HelderBeveiligd vertelt je of je <em style="font-style:normal;color:var(--seal-ink);">aantoonbaar</em> veilig én compliant bent — en genereert het bewijs, de documenten en de acties om dat elke dag waar te maken."
@@ -468,7 +473,7 @@
         <div class="chain-row">
           <div class="chain-node mono"><span class="k">Document</span><span class="v">Access_Control_Policy.pdf</span></div>
           <svg class="chain-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-          <div class="chain-node"><span class="k">Control</span><span class="v">A.9 — Toegangsrechten</span></div>
+          <div class="chain-node"><span class="k">Control</span><span class="v">A.5.18 — Toegangsrechten</span></div>
           <svg class="chain-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
           <div class="chain-node mono"><span class="k">Framework</span><span class="v">ISO 27001</span></div>
           <svg class="chain-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
@@ -525,10 +530,10 @@
           </div>
         </div>
         <ul class="trigger-list">
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.5 8.5-.16.05-.34.05-.5 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg><span>NIS2-plicht — direct, of via een grotere klant in de keten.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.5 8.5-.16.05-.34.05-.5 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg><span>NIS2-plicht via de Cyberbeveiligingswet — direct, of via een grotere klant in de keten.</span></li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.5 8.5-.16.05-.34.05-.5 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg><span>AVG-boetes in het nieuws maken privacy weer een directiethema.</span></li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.5 8.5-.16.05-.34.05-.5 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg><span>De cyberverzekeraar eist aantoonbare compliance voor een lagere premie.</span></li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.5 8.5-.16.05-.34.05-.5 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg><span>De accountant vraagt om een ISO- of NIS2-verklaring bij de jaarrekening.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.5 8.5-.16.05-.34.05-.5 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg><span>De cyberverzekeraar vraagt om aantoonbare maatregelen voordat hij je accepteert.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.5 8.5-.16.05-.34.05-.5 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg><span>De accountant stelt bij de jaarrekeningcontrole vragen over IT-beheersing en cyberrisico's.</span></li>
         </ul>
       </div>
     </div>
@@ -544,7 +549,7 @@
         <div class="diff-card">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
           <h3>Bewijs, geen black box</h3>
-          <p>Elke score is herleidbaar naar het document dat hem onderbouwt — geen ongemotiveerd cijfer.</p>
+          <p>Elke score is terug te voeren op het document dat hem onderbouwt.</p>
         </div>
         <div class="diff-card">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
@@ -582,7 +587,7 @@
           <p>Een cyberverzekering afsluiten of verlengen wordt steeds complexer — verzekeraars willen bewijs zien. Ons verzekeraarsrapport zet je score en onderbouwing om in een pasklaar PDF-dossier, in de taal die verzekeraars spreken.</p>
           <ul>
             <li><strong>Pasklaar format</strong> — opgebouwd zoals verzekeraars het willen zien</li>
-            <li><strong>Lagere premie</strong> — verzekeraars belonen aantoonbare bescherming vaak met een lagere premie bij afsluiten of verlengen</li>
+            <li><strong>Sterker gesprek met je verzekeraar</strong> — met onderbouwing op tafel sta je steviger in het gesprek over acceptatie en voorwaarden</li>
           </ul>
           <a href="dashboard.html" target="_blank" rel="noopener" style="font-size:12.5px;font-weight:600;color:var(--seal-ink);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-top:-4px;">Open voorbeeldrapport in de demo
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
@@ -597,7 +602,7 @@
           <p>Jouw klanten in de Bollenstreek vertrouwen op jouw advies. Bied ons dashboard aan in je eigen huisstijl, zodat je meerwaarde toevoegt zonder zelf iets te hoeven bouwen.</p>
           <ul>
             <li><strong>Jouw merk, onze motor</strong> — platform volledig in jouw huisstijl</li>
-            <li><strong>Nieuw verdienmodel</strong> — licentie- of revenue-share-optie</li>
+            <li><strong>Nieuw verdienmodel</strong> — licentie of omzetdeling</li>
             <li><strong>Klantbinding</strong> — volledig overzicht over de status van je cliënten</li>
           </ul>
         </div>
@@ -621,11 +626,11 @@
     <div class="wrap reveal">
       <div class="band">
         <div>
-          <h2>Fase 1: High-Touch Validation.</h2>
+          <h2>Fase 1: eerst bewijzen, dan opschalen.</h2>
           <p>We draaien de eerste pilots samen met accountantskantoren, MSP's en cyberverzekeraars in de Bollenstreek — geen landelijke rollout, maar een paar bedrijven écht goed geholpen.</p>
         </div>
         <div class="band-stats">
-          <div><b class="mono">3</b><span>normenkaders in v1</span></div>
+          <div><b class="mono">3</b><span>normenkaders bij de start</span></div>
           <div><b class="mono">8</b><span>gemeentes in scope</span></div>
           <div><b class="mono">10–150</b><span>fte doelgroep</span></div>
         </div>
@@ -644,7 +649,7 @@
           <summary>Waar staat mijn data, en wie heeft er toegang toe?
             <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
           </summary>
-          <p class="faq-a">Data wordt gehost binnen de EU, versleuteld opgeslagen. Alleen jij en de gebruikers die je zelf toevoegt (bijv. je IT-manager of adviseur) hebben toegang — <strong>HelderBeveiligd-medewerkers krijgen geen standaardtoegang</strong> tot je documenten. We gebruiken je documenten nooit om AI-modellen te trainen; ze worden uitsluitend gebruikt om jouw eigen score en acties te berekenen. Meer details staan in ons <a href="privacy.html" style="color:var(--seal-ink);">privacybeleid</a>.</p>
+          <p class="faq-a"><strong>Op dit moment verwerkt HelderBeveiligd nog geen klantdocumenten.</strong> Wat je hier ziet is een conceptprototype met voorbeelddata; er is nog geen productieomgeving waar je iets naartoe uploadt. Dat is bewust: ik wil eerst met de eerste pilotdeelnemers vaststellen welke waarborgen nodig zijn, en die daarna vastleggen in plaats van ze te beloven.<br><br>De uitgangspunten voor die productieomgeving: verwerking en opslag binnen de EU, versleuteld, toegang alleen voor jou en de mensen die je zelf toevoegt, en je documenten worden niet gebruikt om AI-modellen te trainen. Zodra de leverancierskeuze vastligt, staat precies hier wie wat verwerkt en waar — met naam. Hoe het contactformulier nu werkt, staat in het <a href="privacy.html" style="color:var(--seal-ink);">privacybeleid</a>.</p>
         </details>
         <details class="faq-item">
           <summary>Wat kost HelderBeveiligd na de pilot?
@@ -702,8 +707,9 @@
               </div>
             </div>
             <div class="field"><label for="f-bericht">Bericht (optioneel)</label><textarea id="f-bericht"></textarea></div>
+            <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
             <button type="submit" class="btn btn-primary btn-lg" id="pilot-submit">Vraag een pilotgesprek aan</button>
-            <p style="font-size:11.5px;color:var(--slate-soft);margin:0;">Door te versturen ga je akkoord met ons <a href="privacy.html" style="color:inherit;text-decoration:underline;">privacybeleid</a>.</p>
+            <p style="font-size:11.5px;color:var(--slate-soft);margin:0;">Lees hoe we met je gegevens omgaan in ons <a href="privacy.html" style="color:inherit;text-decoration:underline;">privacybeleid</a>. Liever geen formulier? Mail dan rechtstreeks.</p>
           </form>
         </div>
       </div>
@@ -773,6 +779,10 @@
     var email = document.getElementById("f-email").value.trim();
     var rol = document.getElementById("f-rol").value;
     var bericht = document.getElementById("f-bericht").value.trim();
+    // Honeypot: onzichtbaar voor mensen, ingevuld door bots. FormSubmit gooit
+    // alles weg waarin _honey een waarde heeft.
+    var honeyEl = form.querySelector('input[name="_honey"]');
+    var honey = honeyEl ? honeyEl.value : "";
     var panelEl = document.getElementById("contact-panel");
     var toast = document.getElementById("toast");
 
@@ -790,7 +800,8 @@
         Bericht: bericht || "(geen bericht)",
         _subject: "Nieuwe pilotaanvraag — HelderBeveiligd",
         _template: "table",
-        _captcha: "false"
+        _captcha: "false",
+        _honey: honey
       })
     })
       .then(function (res) {
