@@ -1,0 +1,7 @@
+# De repo-root wordt door GitHub Pages één op één gepubliceerd en .nojekyll
+# betekent dat ook losse bestanden online komen. Interne notities horen
+# buiten de repo; dit is het vangnet.
+TODO.md
+*-review.md
+NOTES*.md
+.DS_Store
