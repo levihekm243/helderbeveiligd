@@ -138,7 +138,8 @@
   .sidebar {
     width: 224px; flex-shrink: 0; background: var(--navy); color: var(--navy-text);
     padding: 20px 12px; display: flex; flex-direction: column;
-  }
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    }
   .brand { display: flex; align-items: center; gap: 9px; padding: 0 8px; margin-bottom: 26px; }
   .brand-mark {
     width: 26px; height: 26px; border-radius: 7px; background: var(--seal);
@@ -160,6 +161,32 @@
     font-size: 12px; color: var(--navy-text-dim); line-height: 1.5;
   }
   .sidebar-footer strong { color: var(--navy-text); font-weight: 600; }
+    .sidebar-cta {
+      display: block; margin: 16px 4px 10px; padding: 10px 12px; border-radius: 8px;
+      background: var(--seal); color: var(--navy); font-size: 13px; font-weight: 600;
+      text-align: center; text-decoration: none; min-height: 44px; line-height: 24px;
+    }
+    .sidebar-cta:hover { filter: brightness(1.06); }
+    .modal-bg { position: fixed; inset: 0; background: rgba(19,28,46,0.55); display: flex;
+                align-items: center; justify-content: center; padding: 20px; z-index: 100; }
+    .modal { background: var(--surface); border-radius: 14px; max-width: 680px; width: 100%;
+             max-height: 86vh; overflow-y: auto; box-shadow: 0 30px 70px -30px rgba(20,24,31,.5); }
+    .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+                  padding: 20px 22px 14px; border-bottom: 1px solid var(--line); position: sticky; top: 0;
+                  background: var(--surface); }
+    .modal-head h3 { margin: 0 0 4px; font-size: 17px; }
+    .modal-head p { margin: 0; font-size: 12.5px; color: var(--slate); }
+    .modal-close { background: none; border: 1px solid var(--line); border-radius: 8px; cursor: pointer;
+                   min-width: 44px; min-height: 44px; color: var(--slate); font-size: 18px; line-height: 1; }
+    .modal-body { padding: 18px 22px 24px; font-size: 13.5px; color: var(--ink); }
+    .modal-body h4 { margin: 18px 0 6px; font-size: 13.5px; }
+    .modal-body h4:first-child { margin-top: 0; }
+    .modal-body p, .modal-body li { color: var(--slate); line-height: 1.6; }
+    .modal-body ul { margin: 0 0 4px; padding-left: 18px; }
+    .concept-strip { background: var(--seal-soft); border: 1px solid var(--seal-soft-border);
+                     color: var(--seal-ink); border-radius: 8px; padding: 10px 12px; font-size: 12.5px;
+                     font-weight: 600; margin-bottom: 16px; }
+    @media (max-width: 860px) { .sidebar-cta { display: none; } }
 
   /* ---------- Main ---------- */
   .main { flex: 1; min-width: 0; padding: 22px 32px 60px; overflow-y: auto; }
@@ -167,7 +194,7 @@
   .topbar .org { font-size: 12px; color: var(--slate); }
   .topbar h1 { font-size: 20px; font-weight: 600; margin: 2px 0 0; letter-spacing: -0.2px; text-wrap: balance; }
   .topbar-icons { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
-  .topbar-icons svg { color: var(--slate); cursor: pointer; }
+  .topbar-icons svg { color: var(--slate); }   /* decoratief: geen cursor, anders lijkt het klikbaar */
   .avatar { width: 30px; height: 30px; border-radius: 99px; background: var(--border); flex-shrink: 0; }
 
   /* ---------- Card ---------- */
@@ -372,7 +399,16 @@
   /* ---------- Responsive sidebar ---------- */
   @media (max-width: 720px) {
     .app { flex-direction: column; }
-    .sidebar { width: 100%; flex-direction: row; align-items: center; padding: 12px; gap: 16px; }
+    .sidebar { width: 100%; flex-direction: row; align-items: center; padding: 10px 8px; gap: 10px;
+               position: static; height: auto; }
+    /* Labels blijven zichtbaar, anders zijn Rapporten en Instellingen onvindbaar */
+    .sidebar .nav { flex-direction: row; gap: 2px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+                    scrollbar-width: none; flex: 1; }
+    .sidebar .nav::-webkit-scrollbar { display: none; }
+    .sidebar .nav-item { flex-direction: column; gap: 3px; min-width: 62px; padding: 6px 4px;
+                         font-size: 10.5px; text-align: center; white-space: nowrap; }
+    .sidebar .nav-item span { display: block !important; }
+    .sidebar .brand-name { display: none; }
     .brand { margin-bottom: 0; }
     .nav { flex-direction: row; overflow-x: auto; gap: 2px; flex: 1; }
     .nav-item span { display: none; }
@@ -401,7 +437,8 @@
       <span class="brand-name">HelderBeveiligd</span>
     </div>
     <nav class="nav" id="nav"></nav>
-    <div class="sidebar-footer">Fase 1 · Bollenstreek pilot<br><strong>Acme Bloembollen B.V.</strong></div>
+    <a class="sidebar-cta" href="index.html#contact">Pilot aanvragen</a>
+      <div class="sidebar-footer">Fase 1 · Bollenstreek pilot<br><strong>Acme Bloembollen B.V.</strong></div>
   </aside>
 
   <main class="main">
@@ -451,16 +488,16 @@
 
   /* ============================== DATA ============================== */
   var NAV = [
-    { id: "overview", label: "Overview", icon: "shield" },
+    { id: "overview", label: "Overzicht", icon: "shield" },
     { id: "compliance", label: "Compliance", icon: "listChecks" },
-    { id: "risks", label: "Risks", icon: "alertTriangle" },
-    { id: "documents", label: "Documents", icon: "fileText" },
-    { id: "actions", label: "Actions", icon: "checkCircle" },
-    { id: "ai", label: "AI Assistant", icon: "messageSquare" },
-    { id: "reports", label: "Reports", icon: "fileBarChart" },
-    { id: "settings", label: "Settings", icon: "settings" }
+    { id: "risks", label: "Risico's", icon: "alertTriangle" },
+    { id: "documents", label: "Documenten", icon: "fileText" },
+    { id: "actions", label: "Acties", icon: "checkCircle" },
+    { id: "ai", label: "AI-assistent", icon: "messageSquare" },
+    { id: "reports", label: "Rapporten", icon: "fileBarChart" },
+    { id: "settings", label: "Instellingen", icon: "settings" }
   ];
-  var VIEW_LABELS = { overview: "Overview", compliance: "Compliance", risks: "Risks", documents: "Documents", actions: "Actions", ai: "AI Assistant", reports: "Reports", settings: "Settings" };
+  var VIEW_LABELS = { overview: "Overzicht", compliance: "Compliance", risks: "Risico's", documents: "Documenten", actions: "Acties", ai: "AI-assistent", reports: "Rapporten", settings: "Instellingen" };
 
   var DATA = {
     frameworks: [
@@ -468,23 +505,23 @@
         id: "iso", name: "ISO 27001", score: 68, compliant: 42, partial: 18, missing: 12,
         requirements: [
           {
-            id: "a9", title: "A.9 — Toegangsrechten moeten passend beheerd worden.", status: "partial",
-            evidence: "Access_Control_Policy.pdf",
-            reasoning: "De policy beschrijft het toekennen van toegangsrechten, maar bevat geen formeel proces voor periodieke review van toegangsrechten.",
-            missing: ["Periodic access review procedure", "Reviewfrequentie", "Verantwoordelijke eigenaar"],
+            id: "a9", title: "A.5.18 — Toegangsrechten moeten passend beheerd en periodiek herzien worden.", status: "partial",
+            evidence: "Toegangsbeleid.pdf",
+            reasoning: "Het beleid beschrijft het toekennen van toegangsrechten, maar bevat geen formeel proces voor periodieke herziening daarvan.",
+            missing: ["Procedure voor periodieke toegangsreview", "Reviewfrequentie", "Verantwoordelijke eigenaar"],
             recommendation: "Implementeer een kwartaalproces voor toegangsreview.", risk: "High"
           },
           {
-            id: "a12", title: "A.12 — Operations security & malware protection.", status: "ok",
-            evidence: "Endpoint_Protection_Overzicht.pdf",
+            id: "a12", title: "A.8.7 — Bescherming tegen malware.", status: "ok",
+            evidence: "Endpointbescherming-overzicht.pdf",
             reasoning: "Alle endpoints draaien actuele anti-malware met centraal beheer en logging.",
             missing: [], recommendation: "Geen actie vereist — blijf kwartaalcontroles uitvoeren.", risk: "Low"
           },
           {
-            id: "a17", title: "A.17 — Business continuity management.", status: "missing",
+            id: "a17", title: "A.5.30 — ICT-gereedheid voor bedrijfscontinuïteit.", status: "missing",
             evidence: null,
             reasoning: "Geen business continuity plan aangetroffen in geüploade documenten.",
-            missing: ["Business continuity plan", "Uitwijkprocedure", "RTO/RPO-definities"],
+            missing: ["Continuïteitsplan", "Uitwijkprocedure", "Hersteltijd- en dataverliesnormen (RTO/RPO)"],
             recommendation: "Genereer een eerste conceptplan met AI en laat dit reviewen.", risk: "High"
           }
         ]
@@ -493,51 +530,55 @@
       { id: "nis2", name: "NIS2", score: 54, compliant: 19, partial: 14, missing: 17, requirements: [] }
     ],
     risks: [
-      { id: 1, title: "Gebrek aan periodieke toegangsreviews", score: 16, likelihood: 4, impact: 4, frameworks: ["ISO 27001", "NIS2", "GDPR"], evidence: "Access_Control_Policy.pdf", action: "Implementeer kwartaalreview van toegangsrechten.", level: "critical" },
+      { id: 1, title: "Gebrek aan periodieke toegangsreviews", score: 16, likelihood: 4, impact: 4, frameworks: ["ISO 27001", "NIS2", "GDPR"], evidence: "Toegangsbeleid.pdf", action: "Implementeer kwartaalreview van toegangsrechten.", level: "critical" },
       { id: 2, title: "Verouderde TLS-configuratie op klantportaal", score: 15, likelihood: 3, impact: 5, frameworks: ["NIS2"], evidence: "SSL-scan 14 aug", action: "Forceer TLS 1.2+ en schakel verouderde ciphers uit.", level: "critical" },
-      { id: 3, title: "Geen incident response plan", score: 15, likelihood: 3, impact: 5, frameworks: ["ISO 27001", "NIS2"], evidence: "—", action: "Genereer concept incident response plan met AI.", level: "critical" },
-      { id: 4, title: "Open RDP-poort op backupserver", score: 12, likelihood: 3, impact: 4, frameworks: ["NIS2"], evidence: "Poortscan 12 aug", action: "Sluit poort 3389 extern af, gebruik VPN.", level: "high" },
+      { id: 3, title: "Incidentresponsplan is onvolledig", score: 15, likelihood: 3, impact: 5, frameworks: ["ISO 27001", "NIS2"], evidence: "Incidentresponsplan (concept)", action: "Vul het plan aan met rollen, meldtermijnen en contactgegevens.", level: "critical" },
+      { id: 4, title: "Open RDP-poort op backupserver", score: 20, likelihood: 4, impact: 5, frameworks: ["NIS2", "ISO 27001"], evidence: "Poortscan", action: "Sluit poort 3389 extern af en ontsluit de server via VPN.", level: "critical" },
       { id: 5, title: "Geen leveranciersbeoordeling supply chain", score: 10, likelihood: 2, impact: 5, frameworks: ["NIS2"], evidence: "—", action: "Stel een supplier security-checklist op.", level: "high" }
     ],
     riskCounts: { critical: 3, high: 7, medium: 12, low: 8 },
     documents: [
-      { name: "Information Security Policy", status: "ok" },
-      { name: "Password Policy", status: "ok" },
-      { name: "Backup Policy", status: "ok" },
-      { name: "Encryption Policy", status: "ok" },
-      { name: "Acceptable Use Policy", status: "ok" },
-      { name: "Endpoint Protection Overzicht", status: "ok" },
-      { name: "Data Classification Policy", status: "ok" },
-      { name: "Physical Security Policy", status: "ok" },
-      { name: "Incident Response Plan", status: "partial" },
-      { name: "Access Control Policy", status: "partial" },
-      { name: "Change Management Procedure", status: "partial" },
-      { name: "Remote Access Policy", status: "partial" },
-      { name: "Business Continuity Plan", status: "missing" },
-      { name: "Supplier Security Policy", status: "missing" },
-      { name: "Risk Assessment Methodology", status: "missing" },
-      { name: "Data Retention & Disposal Policy", status: "missing" },
-      { name: "Vendor Risk Register", status: "missing" }
+      { name: "Informatiebeveiligingsbeleid", status: "ok" },
+      { name: "Wachtwoordbeleid", status: "ok" },
+      { name: "Back-upbeleid", status: "ok" },
+      { name: "Encryptiebeleid", status: "ok" },
+      { name: "Gebruikersreglement", status: "ok" },
+      { name: "Endpointbescherming — overzicht", status: "ok" },
+      { name: "Dataclassificatiebeleid", status: "ok" },
+      { name: "Fysieke beveiliging — beleid", status: "ok" },
+      { name: "Verwerkingsregister (AVG)", status: "ok" },
+      { name: "Verwerkersovereenkomsten (AVG)", status: "ok" },
+      { name: "Datalekprocedure (AVG)", status: "partial" },
+      { name: "Incidentresponsplan", status: "partial" },
+      { name: "Toegangsbeleid", status: "partial" },
+      { name: "Wijzigingsbeheerprocedure", status: "partial" },
+      { name: "Beleid voor toegang op afstand", status: "partial" },
+      { name: "Beveiligingsbewustzijn en training", status: "missing" },
+      { name: "Continuïteitsplan", status: "missing" },
+      { name: "Leveranciersbeleid", status: "missing" },
+      { name: "Leveranciersregister met risicobeoordeling", status: "missing" },
+      { name: "Risicobeoordelingsmethodiek", status: "missing" },
+      { name: "Bewaar- en vernietigingsbeleid", status: "missing" }
     ],
     actions: [
-      { title: "Implementeer kwartaalreview van toegangsrechten", due: "14 sep", framework: "ISO 27001", effort: "Medium", reduction: "Hoog", priority: "high", overdue: false, done: false },
-      { title: "Sluit RDP-poort op backupserver af", due: "20 aug", framework: "NIS2", effort: "Laag", reduction: "Hoog", priority: "high", overdue: true, done: false },
-      { title: "Stel incident response procedure op", due: "5 sep", framework: "ISO 27001 · NIS2", effort: "Hoog", reduction: "Hoog", priority: "medium", overdue: false, done: false },
-      { title: "Documenteer leveranciersbeoordeling", due: "1 okt", framework: "NIS2", effort: "Medium", reduction: "Medium", priority: "medium", overdue: false, done: false },
-      { title: "Vernieuw SSL-certificaat klantportaal", due: "22 aug", framework: "Technisch", effort: "Laag", reduction: "Medium", priority: "high", overdue: true, done: false }
+      { title: "Implementeer kwartaalreview van toegangsrechten", due: "14 sep", framework: "ISO 27001", effort: "Medium", reduction: "Hoog", impact: 4, priority: "high", overdue: false, done: false },
+      { title: "Sluit RDP-poort op backupserver af", due: "20 aug", framework: "NIS2", effort: "Laag", reduction: "Hoog", impact: 4, priority: "high", overdue: true, done: false },
+      { title: "Stel incident response procedure op", due: "5 sep", framework: "ISO 27001 · NIS2", effort: "Hoog", reduction: "Hoog", impact: 4, priority: "medium", overdue: false, done: false },
+      { title: "Documenteer leveranciersbeoordeling", due: "1 okt", framework: "NIS2", effort: "Medium", reduction: "Medium", impact: 3, priority: "medium", overdue: false, done: false },
+      { title: "Forceer TLS 1.2+ en schakel verouderde ciphers uit", due: "22 aug", framework: "Technisch", effort: "Laag", reduction: "Medium", impact: 3, priority: "high", overdue: true, done: false }
     ]
   };
 
   var DISCLAIMERS = {
-    short: "Deze score is een door software en AI gegenereerde inschatting, geen certificering of formeel oordeel. Bedoeld ter ondersteuning van uw eigen beoordeling.",
+    short: "Deze score is een door software en AI gegenereerde inschatting, geen certificering of formeel oordeel. Bedoeld ter ondersteuning van je eigen beoordeling.",
     full: "Dit rapport is gegenereerd door het HelderBeveiligd-platform op basis van geautomatiseerde technische scans en AI-ondersteunde documentanalyse. Het vormt uitsluitend een inschatting ten behoeve van interne oriëntatie door de organisatie en vormt uitdrukkelijk geen certificering, formele audit, auditverklaring of accountantsverklaring in de zin van de daarvoor geldende beroeps- en regelgeving. Aan dit rapport kunnen geen rechten worden ontleend jegens HelderBeveiligd door partijen die dit rapport ontvangen van de organisatie. Voor een formeel oordeel dient een daartoe bevoegde, onafhankelijke certificerende instelling, auditor of accountant te worden geraadpleegd.",
     concept: "AI-gegenereerd concept. Dit document is een startpunt, geen kant-en-klaar beleidsdocument. Laat het inhoudelijk reviewen en vaststellen door een bevoegde functionaris binnen uw organisatie voordat het in gebruik wordt genomen.",
     assistant: "U spreekt met een AI-assistent die antwoordt op basis van uw organisatiedata. Antwoorden kunnen onjuist of onvolledig zijn en vormen geen professioneel advies."
   };
 
   var aiThread = [
-    { role: "user", text: "Waarom is mijn compliance score gedaald?" },
-    { role: "ai", text: "Je score daalde van 74% naar 68% doordat de laatste documentbeoordeling twee requirements identificeerde die niet langer voldoende onderbouwd zijn met bewijs: periodieke toegangsreview (A.9) en business continuity (A.17). Beide zijn nu 'partial' of 'missing'." },
+    { role: "user", text: "Waarom is mijn score deze maand gestegen?" },
+    { role: "ai", text: "Je score ging van 64 naar 72 doordat vier documenten zijn aangevuld met bewijs, waaronder het encryptiebeleid en het endpointoverzicht. Twee requirements wegen nog zwaar negatief: periodieke toegangsreview (A.5.18) en ICT-gereedheid voor continuïteit (A.5.30)." },
     { role: "user", text: "Wat moet ik deze maand doen richting NIS2?" },
     { role: "ai", text: "Drie dingen wegen het zwaarst: (1) sluit de open RDP-poort op de backupserver, (2) stel een incident response procedure op — de 24-uurs meldplicht vereist dit, (3) start een supplier security-checklist voor je belangrijkste leveranciers. Samen brengen deze je NIS2-score van 54% naar naar schatting 66%." }
   ];
@@ -545,13 +586,13 @@
   function aiReplyFor(question) {
     var q = question.toLowerCase();
     if (q.indexOf("score") !== -1) {
-      return "Je Organization Security Score staat op 72/100 (+8% deze maand). De grootste rem is toegangsbeheer: A.9 staat op 'partial' omdat er geen periodiek reviewproces is vastgelegd. Los je dat op, dan stijgt zowel je ISO- als NIS2-score merkbaar.";
+      return "Je securityscore staat op " + currentScore() + "/100. De grootste rem is toegangsbeheer: A.5.18 staat op 'gedeeltelijk' omdat er geen periodiek reviewproces is vastgelegd. Los je dat op, dan stijgt zowel je ISO- als NIS2-score merkbaar.";
     }
     if (q.indexOf("nis2") !== -1) {
-      return "Voor NIS2 (nu 54%) wegen drie acties het zwaarst: RDP-poort sluiten op de backupserver, een incident response procedure vastleggen (24-uurs meldplicht), en een supplier security-checklist opstellen. Samen brengen ze je richting ~66%.";
-    }
+      return "Deze demo werkt met een vaste set voorbeeldantwoorden en begrijpt je vraag dus niet echt — ik wil je niet laten denken van wel. Probeer een van de voorbeeldvragen hierboven, of vraag naar je score, NIS2, je documenten of je risico's. In het echte product gaat je vraag naar een model dat alleen jouw eigen documenten en scangegevens mag gebruiken.";
+  }
     if (q.indexOf("document") !== -1) {
-      return "Je hebt 12 van de 17 vereiste documenten. De twee met de meeste impact op je score zijn het Business Continuity Plan (volledig ontbrekend) en de Access Control Policy (deels dekkend). Ik kan voor beide een AI-conceptversie voorbereiden.";
+      return "Je hebt " + docStats().present + " van de " + docStats().total + " vereiste documenten. De twee met de meeste impact op je score zijn het continuïteitsplan (ontbreekt volledig) en het toegangsbeleid (dekt maar deels). Ik kan voor beide een AI-conceptversie voorbereiden.";
     }
     if (q.indexOf("risic") !== -1 || q.indexOf("risk") !== -1) {
       return "Je hebt 3 kritieke risico's openstaan: gebrek aan toegangsreviews, verouderde TLS-configuratie, en het ontbreken van een incident response plan. Alle drie zijn direct gekoppeld aan bewijs uit je documenten en scans — te bekijken onder Risks.";
@@ -560,7 +601,11 @@
   }
 
   /* ============================== STATE ============================== */
-  var state = { view: "overview", framework: "iso", requirement: null, risk: null };
+  var beginView = (function () {
+    var m = (location.search.match(/[?&]view=([a-z]+)/) || [])[1];
+    return (m && VIEW_LABELS[m]) ? m : "overview";
+  })();
+  var state = { view: beginView, framework: "iso", requirement: null, risk: null };
 
   /* ============================== HELPERS ============================== */
   function esc(s) {
@@ -595,6 +640,63 @@
         '<div class="ring-value"><b class="mono">' + value + '</b><small>/ 100</small></div>' +
       '</div>';
   }
+  function sluitModal() {
+    var m = document.getElementById("modal-root");
+    if (m) { m.remove(); document.body.style.overflow = ""; }
+  }
+  function openModal(titel, onderschrift, inhoudHtml) {
+    sluitModal();
+    var wrap = document.createElement("div");
+    wrap.id = "modal-root";
+    wrap.innerHTML =
+      '<div class="modal-bg" data-modal-bg><div class="modal" role="dialog" aria-modal="true" aria-label="' + esc(titel) + '">' +
+        '<div class="modal-head"><div><h3>' + esc(titel) + '</h3><p>' + esc(onderschrift) + '</p></div>' +
+        '<button class="modal-close" data-modal-close aria-label="Sluiten">&times;</button></div>' +
+        '<div class="modal-body">' + inhoudHtml + '</div>' +
+      '</div></div>';
+    document.body.appendChild(wrap);
+    document.body.style.overflow = "hidden";
+    wrap.querySelector(".modal-close").focus();
+  }
+
+  // Voorbeeldconcept zoals de AI het zou opleveren. Bewust herkenbaar als
+  // concept: dit is een demo, geen gegenereerd document.
+  function conceptVoor(naam) {
+    var sjablonen = {
+      "Continuïteitsplan": [
+        ["Reikwijdte en uitgangspunten", ["Welke processen zijn kritiek en voor wie", "Maximale uitvalduur per proces (RTO)", "Maximaal aanvaardbaar dataverlies (RPO)"]],
+        ["Rollen en bereikbaarheid", ["Wie beslist over uitwijk", "Wie informeert klanten en leveranciers", "Bereikbaarheid buiten kantooruren"]],
+        ["Uitwijk en herstel", ["Waar draait de uitwijkomgeving", "Hoe en waarvandaan wordt hersteld", "Hoe wordt vastgesteld dat herstel geslaagd is"]],
+        ["Testen", ["Minimaal één keer per jaar een herstelproef", "Vastleggen wat er misging en wat is aangepast"]]
+      ],
+      "Beveiligingsbewustzijn en training": [
+        ["Doelgroep en frequentie", ["Alle medewerkers bij indiensttreding en daarna jaarlijks", "Extra module voor wie betalingen doet"]],
+        ["Onderwerpen", ["Phishing herkennen en melden", "Wachtwoorden en tweestapsverificatie", "Omgaan met klantgegevens"]],
+        ["Aantoonbaarheid", ["Deelnameregistratie per medewerker", "Resultaat van de phishingtest per ronde"]]
+      ],
+      "Leveranciersbeleid": [
+        ["Selectie", ["Welke eisen stel je voordat je in zee gaat", "Wanneer vraag je om een ISO-certificaat of pentestrapport"]],
+        ["Vastlegging", ["Verwerkersovereenkomst waar persoonsgegevens in het spel zijn", "Afspraken over meldtermijn bij incidenten"]],
+        ["Periodieke toetsing", ["Jaarlijkse herbeoordeling van kritieke leveranciers"]]
+      ]
+    };
+    var secties = sjablonen[naam] || [
+      ["Doel en reikwijdte", ["Waarom dit document bestaat en voor wie het geldt"]],
+      ["Verantwoordelijkheden", ["Wie stelt vast, wie voert uit, wie controleert"]],
+      ["Werkwijze", ["De stappen, met termijnen waar die gelden"]],
+      ["Vastlegging en herziening", ["Waar bewijs wordt bewaard", "Wanneer het document opnieuw wordt bekeken"]]
+    ];
+    return '<div class="concept-strip">Concept, opgesteld door AI — nog niet gecontroleerd door een mens. ' +
+           'In de demo is dit een vast voorbeeld.</div>' +
+      secties.map(function (sec) {
+        return '<h4>' + esc(sec[0]) + '</h4><ul>' +
+          sec[1].map(function (r) { return '<li>' + esc(r) + '</li>'; }).join("") + '</ul>';
+      }).join("") +
+      '<p style="margin-top:18px;">Hierna zou je dit concept aanvullen met je eigen situatie, laten ' +
+      'vaststellen en koppelen aan de bijbehorende requirements. De score beweegt pas mee als het ' +
+      'document is vastgesteld.</p>';
+  }
+
   function toast(msg) {
     var el = document.getElementById("toast");
     el.innerHTML = icon("sparkles", 14) + '<span>' + esc(msg) + '</span>';
@@ -604,6 +706,16 @@
   }
 
   /* ============================== VIEWS ============================== */
+  function currentScore() {
+    var basis = 64;                       // stand voordat er acties zijn afgevinkt
+    var gewonnen = DATA.actions.reduce(function (t, a) { return t + (a.done ? (a.impact || 3) : 0); }, 0);
+    return Math.min(100, basis + 8 + gewonnen);   // 8 punten zijn deze maand al geboekt
+  }
+  function nextBestAction() {
+    return DATA.actions.filter(function (a) { return !a.done; })
+      .sort(function (x, y) { return (y.impact || 0) - (x.impact || 0); })[0] || null;
+  }
+
   function viewOverview() {
     var f = DATA.frameworks;
     var subscores = [["Compliance", 78], ["Documenten", 65], ["Risico's", 71], ["Beleid", 82], ["Acties", 64]];
@@ -611,19 +723,22 @@
     var html = '<div class="grid-overview">';
 
     html += '<div class="card span-3"><div class="hero">' +
-      ring(72, 100) +
+      ring(currentScore(), 100) +
       '<div class="hero-mid">' +
-        '<div class="card-title" style="margin-bottom:4px;">Organization Security Score</div>' +
-        '<div class="hero-status"><span class="word">Goed</span><span class="delta">' + icon("arrowUpRight", 14) + ' +8% sinds vorige maand</span></div>' +
+        '<div class="card-title" style="margin-bottom:4px;">Organisatie-securityscore</div>' +
+        '<div class="hero-status"><span class="word">Goed</span><span class="delta">' + icon("arrowUpRight", 14) + ' +' + (currentScore() - 64) + ' punten sinds vorige maand</span></div>' +
         '<div class="subscores">' + subscores.map(function (s) {
           return '<div class="subscore"><div class="sname">' + s[0] + '</div><div class="bar-track"><div class="bar-fill" style="width:' + s[1] + '%;background:var(--navy);"></div></div></div>';
         }).join("") + '</div>' +
       '</div>' +
       '<div class="nba">' +
-        '<div class="kicker">Next Best Action</div>' +
-        '<div class="title">Review je access control policy</div>' +
-        '<div class="meta">~30 min &nbsp;·&nbsp; Risicoreductie: hoog</div>' +
-        '<button class="btn-primary" data-goto="actions">Start actie ' + icon("chevronRight", 14) + '</button>' +
+        '<div class="kicker">Eerstvolgende actie</div>' +
+        (nextBestAction()
+          ? '<div class="title">' + esc(nextBestAction().title) + '</div>' +
+            '<div class="meta">Inspanning: ' + esc(nextBestAction().effort).toLowerCase() + ' &nbsp;·&nbsp; levert ' + (nextBestAction().impact || 3) + ' punten op</div>' +
+            '<button class="btn-primary" data-goto="actions">Start actie ' + icon("chevronRight", 14) + '</button>'
+          : '<div class="title">Alles afgevinkt</div>' +
+            '<div class="meta">Mooi. De volgende scan levert nieuwe acties op.</div>') +
       '</div>' +
     '</div><div class="disclaimer">' + esc(DISCLAIMERS.short) + '</div></div>';
 
@@ -763,7 +878,7 @@
       DATA.documents.map(function (d) {
         var actionLabel = d.status === "missing" ? "Genereer met AI" : (d.status !== "ok" ? "Aanvullen" : "");
         return '<div class="doc-row"><span class="dname">' + esc(d.name) + '</span><div class="doc-meta">' + statusDot(d.status) +
-          (actionLabel ? '<button class="doc-action" data-toast="' + esc(actionLabel === "Genereer met AI" ? "AI-conceptdocument wordt gegenereerd…" : "Document geopend voor aanvulling.") + '">' + actionLabel + ' ' + icon("chevronRight", 12) + '</button>' : '') +
+          (actionLabel ? '<button class="doc-action" data-draft="' + esc(d.name) + '">' + actionLabel + ' ' + icon("chevronRight", 12) + '</button>' : '') +
         '</div></div>';
       }).join("") +
       '<div class="disclaimer">' + esc(DISCLAIMERS.concept) + '</div>' +
@@ -772,14 +887,14 @@
   }
 
   function viewActions() {
-    var html = '<div class="card"><div class="card-title" style="margin-bottom:6px;">Action Center</div>' +
+    var html = '<div class="card"><div class="card-title" style="margin-bottom:6px;">Acties</div>' +
       DATA.actions.map(function (a, i) {
         return '<div class="action-row' + (a.done ? ' done' : '') + '">' +
           '<div class="action-main">' +
             '<button class="check-btn" data-toggle-action="' + i + '">' + icon("checkCircle", 13) + '</button>' +
-            '<span class="' + riskPillClass(a.priority === "high" ? "critical" : "medium") + ' pill">' + (a.priority === "high" ? "High" : "Medium") + '</span>' +
+            '<span class="' + riskPillClass(a.priority === "high" ? "critical" : "medium") + ' pill">' + (a.priority === "high" ? "Hoog" : "Middel") + '</span>' +
             '<div><div class="atitle">' + esc(a.title) + '</div>' +
-            '<div class="ameta' + (a.overdue && !a.done ? ' overdue' : '') + '">Due ' + a.due + (a.overdue ? " · overdue" : "") + ' · ' + esc(a.framework) + ' · effort ' + esc(a.effort) + '</div></div>' +
+            '<div class="ameta' + (a.overdue && !a.done ? ' overdue' : '') + '">Deadline ' + a.due + (a.overdue && !a.done ? " · te laat" : "") + ' · ' + esc(a.framework) + ' · inspanning ' + esc(a.effort) + ' · +' + (a.impact || 3) + ' punten</div></div>' +
           '</div>' + icon("chevronRight", 14) +
         '</div>';
       }).join("") +
@@ -805,7 +920,7 @@
   }
 
   function viewPlaceholder(label) {
-    return '<div class="card"><div class="placeholder">' + icon("fileBarChart", 28, 1.5) + '<p>' + esc(label) + ' volgt in een latere release van deze prototype.</p></div></div>';
+    return '<div class="card"><div class="placeholder">' + icon("fileBarChart", 28, 1.5) + '<p>' + esc(label) + ' volgt in een latere release van dit prototype.</p></div></div>';
   }
 
   var REPORT_SECTIONS = [
@@ -859,7 +974,7 @@
     html += '<div class="card"><div class="card-head"><div class="card-title">Export</div></div>' +
       '<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">' + ring(72, 76) +
       '<div><div class="stat-lbl">Huidige Security Score</div><div style="font-size:12.5px;color:var(--slate);margin-top:2px;">Wordt automatisch als managementsamenvatting opgenomen.</div></div></div>' +
-      '<button class="btn-primary" style="width:100%;justify-content:center;" data-toast="PDF-dossier wordt gegenereerd… (demo)">' + icon("fileBarChart", 14) + ' Genereer verzekeraarsrapport</button>' +
+      '<button class="btn-primary" style="width:100%;justify-content:center;" data-report="1">' + icon("fileBarChart", 14) + ' Genereer verzekeraarsrapport</button>' +
       '<div class="disclaimer full"><span class="label" style="margin-bottom:6px;">Op elke pagina van het PDF-rapport</span>' + esc(DISCLAIMERS.full) + '</div>' +
     '</div></div>';
 
@@ -938,12 +1053,33 @@
       return;
     }
 
+    if (e.target.closest("[data-modal-close]") || e.target.hasAttribute("data-modal-bg")) { sluitModal(); return; }
+    var draftBtn = e.target.closest("[data-draft]");
+    if (draftBtn) {
+      var naam = draftBtn.getAttribute("data-draft");
+      openModal(naam, "Voorbeeldconcept uit de demo", conceptVoor(naam));
+      return;
+    }
+    if (e.target.closest("[data-report]")) {
+      openModal("Verzekeraarsrapport", "Voorbeeld van wat het dossier bevat",
+        '<div class="concept-strip">Voorbeeld uit de demo — er wordt geen echt PDF-bestand gegenereerd.</div>' +
+        '<p style="margin:0 0 14px;">Het dossier wordt opgebouwd uit de gegevens die op dat moment in je ' +
+        'cockpit staan. Voor Acme Bloembollen B.V. zou dat er zo uitzien:</p>' +
+        REPORT_SECTIONS.map(function (sec) {
+          return '<h4>' + esc(sec.title) + '</h4><p>' + esc(sec.desc) + '</p>';
+        }).join("") +
+        '<h4>Op elke pagina</h4><p>' + esc(DISCLAIMERS.full) + '</p>');
+      return;
+    }
     var toastBtn = e.target.closest("[data-toast]");
     if (toastBtn) { toast(toastBtn.getAttribute("data-toast")); return; }
   });
 
   render();
-})();
+
+
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") sluitModal(); });
+  })();
 </script>
 </body>
 </html>
